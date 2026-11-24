@@ -1,0 +1,168 @@
+###############################################
+#                                             #
+#   HA Configuration für Heizungs-Tracking    #
+#   WPF 7 + Wilo Stratos PICO + Shelly 3EM    #
+#   Aktualisiert: 2026-11-24 (v2.9.0-wpf7.1)  #
+#                                             #
+###############################################
+
+# =============================================
+# ENERGY TRACKING (Utility Meters)
+# Täglicher/monatlicher/jährlicher Strom- & Wärmeverbrauch
+# =============================================
+utility_meter:
+  heizung_strom_tag:
+    source: sensor.shelly_power_meter_heating_pump_total_active_energy
+    name: "Heizung Strom Tag"
+    cycle: daily
+
+  heizung_strom_monat:
+    source: sensor.shelly_power_meter_heating_pump_total_active_energy
+    name: "Heizung Strom Monat"
+    cycle: monthly
+
+  heizung_strom_jahr:
+    source: sensor.shelly_power_meter_heating_pump_total_active_energy
+    name: "Heizung Strom Jahr"
+    cycle: yearly
+
+  # Thermische Energie aus Live-Wärmeleistung (Wilo-Volumenstrom × 1,163 × ΔT)
+  heizung_warme_tag:
+    source: sensor.heizung_warme_gesamt
+    name: "Heizung Wärme Tag"
+    cycle: daily
+
+  heizung_warme_monat:
+    source: sensor.heizung_warme_gesamt
+    name: "Heizung Wärme Monat"
+    cycle: monthly
+
+  heizung_warme_jahr:
+    source: sensor.heizung_warme_gesamt
+    name: "Heizung Wärme Jahr"
+    cycle: yearly
+
+  # Wilo Stratos PICO Hilfsenergie (direkt aus Pumpen-Energiezähler 0x0528)
+  wilo_strom_tag:
+    source: sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_energie
+    name: "Wilo Strom Tag"
+    cycle: daily
+
+  wilo_strom_monat:
+    source: sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_energie
+    name: "Wilo Strom Monat"
+    cycle: monthly
+
+# =============================================
+# COMPRESSOR STATUS & ARBEITSZAHLEN (AZ / JAZ)
+# =============================================
+template:
+  - binary_sensor:
+      # Verdichter läuft: primär nativer WPM-i-Relaisstatus (0x0a20 Bits 2&3),
+      # Fallback auf Shelly >200W falls CAN-Relais noch nicht verfügbar
+      - name: "Heizung Verdichter läuft"
+        unique_id: heizung_verdichter_laeuft
+        device_class: running
+        icon: mdi:pump
+        state: >
+          {% set rel = states('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais') %}
+          {% set p = states('sensor.shelly_power_meter_heating_pump_total_active_power') | float(0) %}
+          {% if rel in ['on', 'off'] %}
+            {{ rel == 'on' or p > 350 }}
+          {% else %}
+            {{ p > 200 }}
+          {% endif %}
+
+  - sensor:
+      - name: "Heizung Tages-AZ"
+        unique_id: heizung_az_tag
+        state_class: measurement
+        icon: mdi:gauge
+        availability: >
+          {{ is_number(states('sensor.heizung_warme_tag'))
+             and is_number(states('sensor.heizung_strom_tag'))
+             and (states('sensor.heizung_strom_tag') | float(0)) >= 0.2 }}
+        state: >
+          {% set q = states('sensor.heizung_warme_tag') | float(0) %}
+          {% set e = states('sensor.heizung_strom_tag') | float(0) %}
+          {{ (q / e) | round(2) if e >= 0.2 else none }}
+
+      - name: "Heizung Monats-AZ"
+        unique_id: heizung_az_monat
+        state_class: measurement
+        icon: mdi:gauge
+        availability: >
+          {{ is_number(states('sensor.heizung_warme_monat'))
+             and is_number(states('sensor.heizung_strom_monat'))
+             and (states('sensor.heizung_strom_monat') | float(0)) >= 1.0 }}
+        state: >
+          {% set q = states('sensor.heizung_warme_monat') | float(0) %}
+          {% set e = states('sensor.heizung_strom_monat') | float(0) %}
+          {{ (q / e) | round(2) if e >= 1.0 else none }}
+
+      - name: "Heizung Jahres-AZ (JAZ)"
+        unique_id: heizung_az_jahr
+        state_class: measurement
+        icon: mdi:gauge
+        availability: >
+          {{ is_number(states('sensor.heizung_warme_jahr'))
+             and is_number(states('sensor.heizung_strom_jahr'))
+             and (states('sensor.heizung_strom_jahr') | float(0)) >= 5.0 }}
+        state: >
+          {% set q = states('sensor.heizung_warme_jahr') | float(0) %}
+          {% set e = states('sensor.heizung_strom_jahr') | float(0) %}
+          {{ (q / e) | round(2) if e >= 5.0 else none }}
+
+      - name: "Wilo Stromanteil heute"
+        unique_id: heizung_wilo_stromanteil_tag
+        unit_of_measurement: "%"
+        state_class: measurement
+        icon: mdi:percent
+        availability: >
+          {{ is_number(states('sensor.wilo_strom_tag'))
+             and is_number(states('sensor.heizung_strom_tag'))
+             and (states('sensor.heizung_strom_tag') | float(0)) >= 0.1 }}
+        state: >
+          {% set w = states('sensor.wilo_strom_tag') | float(0) %}
+          {% set t = states('sensor.heizung_strom_tag') | float(0) %}
+          {{ [100.0, [0.0, (w / t * 100.0)] | max] | min | round(1) if t >= 0.1 else none }}
+
+# =============================================
+# THERMAL ENERGY INTEGRATION & RUNTIME TRACKING
+# =============================================
+sensor:
+  # Riemann-Integral der Live-Wärmeleistung (kW -> kWh)
+  - platform: integration
+    name: "Heizung Wärme Gesamt"
+    unique_id: heizung_waerme_gesamt
+    source: sensor.utility_room_stiebel_eltron_wpf_7_warmeleistung_live
+    method: left
+    unit_time: h
+    round: 3
+
+  - platform: history_stats
+    name: "Verdichter Laufzeit heute"
+    unique_id: verdichter_laufzeit_heute
+    entity_id: binary_sensor.heizung_verdichter_lauft
+    state: "on"
+    type: time
+    start: "{{ today_at('00:00') }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    name: "Verdichter Starts heute"
+    unique_id: verdichter_starts_heute
+    entity_id: binary_sensor.heizung_verdichter_lauft
+    state: "on"
+    type: count
+    start: "{{ today_at('00:00') }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    name: "Verdichter Laufzeit gestern"
+    unique_id: verdichter_laufzeit_gestern
+    entity_id: binary_sensor.heizung_verdichter_lauft
+    state: "on"
+    type: time
+    start: "{{ today_at('00:00') - timedelta(days=1) }}"
+    end: "{{ today_at('00:00') }}"

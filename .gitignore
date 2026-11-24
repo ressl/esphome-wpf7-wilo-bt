@@ -1,0 +1,23 @@
+# Local secrets & credentials (never commit!)
+secrets.yaml
+**/secrets.yaml
+*.env
+.env*
+
+# ESPHome build artifacts
+.esphome/
+**/.esphome/
+build/
+
+# Python & OS artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+._*
+
+# Local BLE packet captures
+*.pklg
+*.pcap
+*.pcapng

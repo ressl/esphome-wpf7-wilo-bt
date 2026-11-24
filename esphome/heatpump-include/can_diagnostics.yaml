@@ -1,0 +1,56 @@
+# Read-only native TWAI diagnostics. Driver/header are owned by the existing CAN integration.
+# Empty optional preserves unknown state if the driver is not available; never invent zero.
+sensor:
+  - platform: template
+    name: "CAN TX Error Counter"
+    id: can_tx_errors
+    entity_category: diagnostic
+    disabled_by_default: false
+    accuracy_decimals: 0
+    update_interval: 30s
+    lambda: |-
+      twai_status_info_t status;
+      if (twai_get_status_info(&status) != ESP_OK) return {};
+      return status.tx_error_counter;
+
+  - platform: template
+    name: "CAN RX Error Counter"
+    id: can_rx_errors
+    entity_category: diagnostic
+    disabled_by_default: false
+    accuracy_decimals: 0
+    update_interval: 30s
+    lambda: |-
+      twai_status_info_t status;
+      if (twai_get_status_info(&status) != ESP_OK) return {};
+      return status.rx_error_counter;
+
+  - platform: template
+    name: "CAN Bus Errors"
+    id: can_bus_errors
+    entity_category: diagnostic
+    disabled_by_default: false
+    accuracy_decimals: 0
+    update_interval: 30s
+    lambda: |-
+      twai_status_info_t status;
+      if (twai_get_status_info(&status) != ESP_OK) return {};
+      return status.bus_error_count;
+
+text_sensor:
+  - platform: template
+    name: "CAN State"
+    id: can_state
+    entity_category: diagnostic
+    disabled_by_default: false
+    update_interval: 30s
+    lambda: |-
+      twai_status_info_t status;
+      if (twai_get_status_info(&status) != ESP_OK) return {};
+      switch (status.state) {
+        case TWAI_STATE_RUNNING: return {"Läuft"};
+        case TWAI_STATE_STOPPED: return {"Gestoppt"};
+        case TWAI_STATE_BUS_OFF: return {"Bus-Off"};
+        case TWAI_STATE_RECOVERING: return {"Erholung"};
+        default: return {"Unbekannt"};
+      }

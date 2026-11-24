@@ -1,0 +1,347 @@
+###############################################################################
+#
+#   WPF 7 + Wilo Stratos PICO: Schutz, Standby-Absenkung & Alarme (2026-11-24)
+#
+#   Hydraulik: Wilo Stratos PICO ist die einzige Heizungspumpe direkt an der
+#   WPF 7 / Reihenpuffer (nur Heizbetrieb, kein Trinkwarmwasser).
+#   WPF 7 Datenblatt (S. 15): Mindestvolumenstrom warme Seite = 0,70 m³/h.
+#
+#   Bausteine:
+#     1. Mindestdurchfluss-Schutz (default ON):
+#        Erkennt über ESP32-Sensor (< 0,75 m³/h für >= 15 s bei aktivem
+#        Verdichter oder Quellenpumpe) Unterdurchfluss, hebt Wilo-Sollwert
+#        sofort um +0,5 m (max. 3,5 m) an und warnt per Benachrichtigung.
+#     2. Optionale Standby-Absenkung (default OFF — per Schalter aktivierbar):
+#        Hebt Wilo SOFORT auf Betriebs-Sollwert an, sobald die Quellenpumpe
+#        (Bit 8 — 30 s VOR Verdichterstart!), der Verdichter, Brenner oder
+#        Shelly > 200 W aktiv wird. Senkt erst nach Ablauf der Nachlaufzeit
+#        im reinen Leerlauf auf den Standby-Sollwert ab.
+#     3. Störungs- & Heizstab-Alarm:
+#        Meldet aktive WPM-i-Störungen (0x0001) sowie Heizstab-Einsatz
+#        (DHC1/DHC2 aus SAMMEL_RELAISSTATUS 0x0a20 Bits 0/1).
+#
+###############################################################################
+
+input_boolean:
+  wpf7_wilo_mindestdurchfluss_schutz:
+    name: "Wilo Mindestdurchfluss-Schutz"
+    icon: mdi:shield-check
+
+  wpf7_wilo_standby_absenkung:
+    name: "Wilo Standby-Absenkung"
+    icon: mdi:pump-off
+
+input_number:
+  wpf7_wilo_sollwert_betrieb:
+    name: "Wilo Sollwert Betrieb"
+    min: 1.5
+    max: 5.0
+    step: 0.1
+    unit_of_measurement: "m"
+    mode: box
+    icon: mdi:gauge-full
+
+  wpf7_wilo_sollwert_standby:
+    name: "Wilo Sollwert Standby"
+    min: 0.8
+    max: 3.0
+    step: 0.1
+    unit_of_measurement: "m"
+    mode: box
+    icon: mdi:gauge-low
+
+  wpf7_wilo_nachlauf_min:
+    name: "Wilo Nachlaufzeit nach Verdichter"
+    min: 1
+    max: 30
+    step: 1
+    unit_of_measurement: "min"
+    mode: box
+    icon: mdi:timer-outline
+
+automation:
+  # =========================================================================
+  # 1) Mindestdurchfluss-Schutz (WPF 7 min. 0,70 m³/h warme Seite)
+  # =========================================================================
+  - id: wpf7_wilo_mindestdurchfluss_schutz
+    alias: "WPF 7: Wilo Mindestdurchfluss-Schutz"
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig
+        to: "on"
+        id: low_flow
+      - platform: time_pattern
+        minutes: "/2"
+        id: recheck
+      - platform: state
+        entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig
+        to: "off"
+        for:
+          minutes: 1
+        id: recovered
+    condition:
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: recovered
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: input_boolean.wpf7_wilo_mindestdurchfluss_schutz
+                state: "on"
+              - condition: state
+                entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig
+                state: "on"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: recovered
+            sequence:
+              - action: persistent_notification.dismiss
+                data:
+                  notification_id: wpf7_low_flow
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.wpf7_wilo_mindestdurchfluss_schutz
+                state: "on"
+              - condition: state
+                entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig
+                state: "on"
+            sequence:
+              - variables:
+                  flow: "{{ states('sensor.utility_room_stiebel_eltron_wpf_7_wilo_volumenstrom') | float(0) | round(2) }}"
+                  cur_h: "{{ states('number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_forderhohe') | float(2.5) }}"
+                  new_h: "{{ [3.5, (cur_h + 0.5)] | min | round(1) }}"
+                  wilo_ready: >-
+                    {{ is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_verbunden', 'on')
+                       and is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_authentifiziert', 'on') }}
+              - if:
+                  - condition: template
+                    value_template: "{{ wilo_ready and new_h > cur_h + 0.05 }}"
+                then:
+                  - action: number.set_value
+                    target:
+                      entity_id: number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_forderhohe
+                    data:
+                      value: "{{ new_h }}"
+                  - action: logbook.log
+                    data:
+                      name: "WPF 7 Durchfluss-Schutz"
+                      message: "Durchfluss zu niedrig ({{ flow }} m³/h < 0,75 m³/h): Wilo-Förderhöhe von {{ cur_h }} m auf {{ new_h }} m erhöht."
+                      entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig
+              - action: persistent_notification.create
+                data:
+                  notification_id: wpf7_low_flow
+                  title: "WPF 7: Heizungs-Durchfluss zu niedrig"
+                  message: >-
+                    Aktueller Wilo-Volumenstrom: **{{ flow }} m³/h** (WPF-7-Minimum: 0,70 m³/h).
+                    {% if wilo_ready and new_h > cur_h + 0.05 %}
+                    Förderhöhe wurde automatisch von {{ cur_h }} m auf **{{ new_h }} m** angehoben.
+                    {% endif %}
+                    Bitte prüfen, ob zu viele FBH-Heizkreise geschlossen sind.
+
+  # =========================================================================
+  # 2) Optionale Standby-Absenkung der Wilo-Förderhöhe
+  # =========================================================================
+  - id: wpf7_wilo_standby_absenkung
+    alias: "WPF 7: Wilo Standby-Absenkung"
+    mode: restart
+    trigger:
+      # Sofortige Anhebung 30 s VOR Verdichterstart über Quellenpumpe (Bit 8)!
+      - platform: state
+        entity_id:
+          - binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_quellenpumpe
+          - binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais
+          - binary_sensor.stiebel_eltron_wpf_7_brenner
+        to: "on"
+        id: demand_on
+      - platform: numeric_state
+        entity_id: sensor.shelly_power_meter_heating_pump_total_active_power
+        above: 200
+        id: demand_on
+      - platform: state
+        entity_id: input_boolean.wpf7_wilo_standby_absenkung
+        to: "off"
+        id: disabled
+      - platform: state
+        entity_id: input_boolean.wpf7_wilo_standby_absenkung
+        to: "on"
+        id: enabled
+      - platform: state
+        entity_id:
+          - input_number.wpf7_wilo_sollwert_betrieb
+          - input_number.wpf7_wilo_sollwert_standby
+        for:
+          seconds: 5
+        id: config_changed
+      - platform: time_pattern
+        minutes: "/1"
+        id: tick
+    condition:
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: disabled
+          - condition: state
+            entity_id: input_boolean.wpf7_wilo_standby_absenkung
+            state: "on"
+    variables:
+      wilo_num: number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_forderhohe
+      wilo_ready: >-
+        {{ is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_verbunden', 'on')
+           and is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_authentifiziert', 'on')
+           and is_number(states(wilo_num)) }}
+      cur_h: "{{ states(wilo_num) | float(2.5) }}"
+      soll_betrieb: "{{ states('input_number.wpf7_wilo_sollwert_betrieb') | float(2.5) | round(1) }}"
+      soll_standby: "{{ [states('input_number.wpf7_wilo_sollwert_standby') | float(1.5), soll_betrieb] | min | round(1) }}"
+      nachlauf_s: "{{ (states('input_number.wpf7_wilo_nachlauf_min') | float(5)) * 60 }}"
+      hp_active: >-
+        {{ is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_quellenpumpe', 'on')
+           or is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais', 'on')
+           or is_state('binary_sensor.stiebel_eltron_wpf_7_brenner', 'on')
+           or (states('sensor.shelly_power_meter_heating_pump_total_active_power') | float(0) > 200)
+           or is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig', 'on') }}
+      idle_s: >-
+        {% set now_ts = as_timestamp(now()) %}
+        {% set e_q = states['binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_quellenpumpe'] %}
+        {% set e_v = states['binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais'] %}
+        {% set e_b = states['binary_sensor.stiebel_eltron_wpf_7_brenner'] %}
+        {% set t_q = as_timestamp(e_q.last_changed, now_ts) if e_q is not none else now_ts %}
+        {% set t_v = as_timestamp(e_v.last_changed, now_ts) if e_v is not none else now_ts %}
+        {% set t_b = as_timestamp(e_b.last_changed, now_ts) if e_b is not none else now_ts %}
+        {{ now_ts - ([t_q, t_v, t_b] | max) }}
+    action:
+      - choose:
+          # Beim Ausschalten der Standby-Absenkung einmalig zurück auf Betriebs-Sollwert
+          - conditions:
+              - condition: trigger
+                id: disabled
+              - condition: template
+                value_template: "{{ wilo_ready and (cur_h - soll_betrieb) | abs > 0.05 }}"
+            sequence:
+              - action: number.set_value
+                target:
+                  entity_id: "{{ wilo_num }}"
+                data:
+                  value: "{{ soll_betrieb }}"
+              - action: logbook.log
+                data:
+                  name: "WPF 7 Wilo Steuerung"
+                  message: "Standby-Absenkung deaktiviert: Förderhöhe zurück auf {{ soll_betrieb }} m."
+                  entity_id: input_boolean.wpf7_wilo_standby_absenkung
+          # Wenn Funktion aktiv und Wilo bereit
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.wpf7_wilo_standby_absenkung
+                state: "on"
+              - condition: template
+                value_template: "{{ wilo_ready }}"
+            sequence:
+              - choose:
+                  # Wärmepumpe startet / läuft -> sofort auf Betriebs-Sollwert (nie tiefer als aktueller Schutz-Wert)
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ hp_active }}"
+                    sequence:
+                      - if:
+                          - condition: template
+                            value_template: "{{ cur_h < soll_betrieb - 0.05 }}"
+                        then:
+                          - action: number.set_value
+                            target:
+                              entity_id: "{{ wilo_num }}"
+                            data:
+                              value: "{{ soll_betrieb }}"
+                          - action: logbook.log
+                            data:
+                              name: "WPF 7 Wilo Steuerung"
+                              message: "WP-Anforderung aktiv: Förderhöhe {{ cur_h }} m -> {{ soll_betrieb }} m."
+                              entity_id: input_boolean.wpf7_wilo_standby_absenkung
+                  # Reiner Leerlauf + Nachlaufzeit abgelaufen -> auf Standby-Sollwert absenken
+                  - conditions:
+                      - condition: template
+                        value_template: "{{ not hp_active and (idle_s | float(0)) >= (nachlauf_s | float(300)) and (cur_h - soll_standby) | abs > 0.05 }}"
+                    sequence:
+                      - action: number.set_value
+                        target:
+                          entity_id: "{{ wilo_num }}"
+                        data:
+                          value: "{{ soll_standby }}"
+                      - action: logbook.log
+                        data:
+                          name: "WPF 7 Wilo Steuerung"
+                          message: "WP im Leerlauf (> {{ (nachlauf_s / 60) | int }} min): Förderhöhe {{ cur_h }} m -> {{ soll_standby }} m."
+                          entity_id: input_boolean.wpf7_wilo_standby_absenkung
+
+  # =========================================================================
+  # 3) Störungs- & Heizstab-Alarme (WPM i 0x0001 & DHC1/DHC2 aus 0x0a20)
+  # =========================================================================
+  - id: wpf7_stoerung_und_heizstab_alarm
+    alias: "WPF 7: Störungs- & Heizstab-Alarm"
+    mode: parallel
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_storung_aktiv
+        to: "on"
+        for:
+          seconds: 30
+        id: wp_fault_on
+      - platform: state
+        entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_storung_aktiv
+        to: "off"
+        for:
+          seconds: 30
+        id: wp_fault_off
+      - platform: state
+        entity_id:
+          - binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_1_dhc1
+          - binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_2_dhc2
+        to: "on"
+        for:
+          minutes: 1
+        id: dhc_on
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: wp_fault_on
+            sequence:
+              - variables:
+                  err_txt: "{{ states('sensor.utility_room_stiebel_eltron_wpf_7_fehlerstatus_klartext') }}"
+              - action: persistent_notification.create
+                data:
+                  notification_id: wpf7_fault
+                  title: "Stiebel Eltron WPF 7: Störung aktiv"
+                  message: "Aktive WPM-i-Störung: **{{ err_txt }}**."
+              - action: logbook.log
+                data:
+                  name: "WPF 7 Störung"
+                  message: "Aktive Störung gemeldet: {{ err_txt }}"
+                  entity_id: binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_storung_aktiv
+          - conditions:
+              - condition: trigger
+                id: wp_fault_off
+            sequence:
+              - action: persistent_notification.dismiss
+                data:
+                  notification_id: wpf7_fault
+          - conditions:
+              - condition: trigger
+                id: dhc_on
+            sequence:
+              - action: persistent_notification.create
+                data:
+                  notification_id: wpf7_dhc
+                  title: "WPF 7: Elektrischer Heizstab (DHC) aktiv"
+                  message: >-
+                    {{ trigger.to_state.name }} ist seit über 1 Minute aktiv
+                    (Vorlauf: {{ states('sensor.stiebel_eltron_wpf_7_wp_vorlauf_ist') }} °C,
+                    Quelle: {{ states('sensor.utility_room_stiebel_eltron_wpf_7_quellen_isttemperatur_sole') }} °C,
+                    Leistung: {{ states('sensor.shelly_power_meter_heating_pump_total_active_power') }} W).
+              - action: logbook.log
+                data:
+                  name: "WPF 7 Heizstab"
+                  message: "{{ trigger.to_state.name }} aktiv."
+                  entity_id: "{{ trigger.entity_id }}"

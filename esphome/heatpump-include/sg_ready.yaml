@@ -1,0 +1,75 @@
+#
+# SG Ready for the WPF 7 (ressl fork 2.3.0) - native ESPHome API entities
+#
+# Replaces the former MQTT-only SG Ready entities. The WPF 7 has no DHW tank,
+# so SG Ready shifts the heating curve via the day room setpoint instead of
+# boosting the (unused) DHW setpoint. Logic: sgReadyRequest() in
+# ha-stiebel-control.h.
+#
+#   1 - EVU Sperre : mode Bereitschaft, room setpoint = baseline
+#   2 - Normal     : baseline mode + baseline room setpoint restored
+#   3 - Empfohlen  : mode Tagbetrieb, room setpoint = baseline + Boost 3
+#   4 - Zwang      : mode Tagbetrieb, room setpoint = baseline + Boost 4
+#
+# The baseline is read from the WPM i when the first non-normal state is
+# requested and kept in flash (globals below) until "2 - Normal" restores it.
+# Changes other than "2 - Normal" are limited to one per 10 minutes.
+#
+
+globals:
+  - id: sg_state
+    type: int
+    restore_value: true
+    initial_value: '2'
+  - id: sg_saved_room          # baseline RAUMSOLLTEMP_I in 0.1 degC, 0 = none
+    type: int
+    restore_value: true
+    initial_value: '0'
+  - id: sg_saved_mode          # baseline PROGRAMMSCHALTER (BetriebsartList index), -1 = none
+    type: int
+    restore_value: true
+    initial_value: '-1'
+
+select:
+  - platform: template
+    name: "SG Ready Zustand"
+    id: sg_ready_select
+    icon: "mdi:solar-power"
+    options:
+      - "1 - EVU Sperre"
+      - "2 - Normal"
+      - "3 - Empfohlen"
+      - "4 - Zwang"
+    update_interval: 5s
+    lambda: return sgReadyCurrentOption();
+    set_action:
+      - lambda: sgReadyRequest(x);
+
+number:
+  - platform: template
+    name: "SG Ready Boost Zustand 3"
+    id: sg_boost_3
+    icon: "mdi:thermometer-plus"
+    entity_category: config
+    unit_of_measurement: "K"
+    min_value: 0
+    max_value: 2
+    step: 0.5
+    mode: box
+    optimistic: true
+    restore_value: true
+    initial_value: 1.0
+
+  - platform: template
+    name: "SG Ready Boost Zustand 4"
+    id: sg_boost_4
+    icon: "mdi:thermometer-chevron-up"
+    entity_category: config
+    unit_of_measurement: "K"
+    min_value: 0
+    max_value: 3
+    step: 0.5
+    mode: box
+    optimistic: true
+    restore_value: true
+    initial_value: 2.0

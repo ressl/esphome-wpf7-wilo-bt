@@ -1,0 +1,1967 @@
+{
+  "views": [
+    {
+      "title": "Übersicht",
+      "path": "heizung",
+      "icon": "mdi:heat-pump",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Jetzt",
+              "heading_style": "title",
+              "icon": "mdi:heat-pump"
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.heizung_verdichter_lauft",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Verdichter"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_fehlerstatus_klartext",
+              "primary": "Status",
+              "secondary": "{{ states('sensor.utility_room_stiebel_eltron_wpf_7_fehlerstatus_klartext') }}",
+              "icon": "{% if is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_storung_aktiv', 'on') %}mdi:alert-octagon{% else %}mdi:check-circle{% endif %}",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "color": "{% if is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_storung_aktiv', 'on') %}red{% else %}green{% endif %}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_relaisstatus_klartext",
+              "primary": "Aktive Relais",
+              "secondary": "{{ states('sensor.utility_room_stiebel_eltron_wpf_7_relaisstatus_klartext') }}",
+              "icon": "mdi:electric-switch",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "color": "{% if is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais', 'on') %}orange{% elif is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_quellenpumpe', 'on') %}amber{% else %}blue-grey{% endif %}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_1_dhc1",
+              "primary": "Heizstab (DHC)",
+              "secondary": "{% set d1 = is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_1_dhc1', 'on') %}{% set d2 = is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_2_dhc2', 'on') %}{% if d1 and d2 %}Stufe 1+2{% elif d1 %}Stufe 1{% elif d2 %}Stufe 2{% else %}Aus{% endif %}",
+              "icon": "mdi:heating-coil",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "color": "{% if is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_1_dhc1', 'on') or is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_2_dhc2', 'on') %}red{% else %}blue-grey{% endif %}"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_verdichter_rest_stillstandszeit",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Rest-Stillstand"
+            },
+            {
+              "type": "tile",
+              "entity": "select.stiebel_eltron_wpf_7_betriebsmodus_auswahl",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Betriebsmodus",
+              "features": [
+                {
+                  "type": "select-options"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "select.utility_room_stiebel_eltron_wpf_7_sg_ready_zustand",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "SG Ready"
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.stiebel_eltron_wpf_7_evu_sperre_aktiv",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "EVU-Sperre"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Raumführung Wohnzimmer",
+              "heading_style": "title",
+              "icon": "mdi:home-thermometer"
+            },
+            {
+              "type": "tile",
+              "entity": "input_boolean.wpf7_raumfuehrung",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Raumführung",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "markdown",
+              "content": "⚠️ **Hinweis:** Betriebsmodus steht auf `{{ states('select.stiebel_eltron_wpf_7_betriebsmodus_auswahl') }}` – Raumführung regelt nur im Modus **Automatik**.",
+              "grid_options": {
+                "columns": 12
+              },
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "input_boolean.wpf7_raumfuehrung",
+                  "state": "on"
+                },
+                {
+                  "condition": "state",
+                  "entity": "select.stiebel_eltron_wpf_7_betriebsmodus_auswahl",
+                  "state_not": "Automatik"
+                }
+              ]
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.wpf7_wohnzimmer_zieltemperatur",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Zieltemperatur",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.living_room_climate_sensor_temperature",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wohnzimmer Ist"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_raumsolltemp_i",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Raum-Soll WPM i"
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.wpf7_raumfuehrung_integral",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "I-Anteil"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heizkurve",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Heizkurve"
+            },
+            {
+              "type": "tile",
+              "entity": "number.stiebel_eltron_wpf_7_raum_solltemperatur_tag",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Soll Tag",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "input_boolean.wpf7_raumfuehrung",
+                  "state": "off"
+                }
+              ]
+            },
+            {
+              "type": "tile",
+              "entity": "number.stiebel_eltron_wpf_7_raum_solltemperatur_nacht",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Soll Nacht",
+              "visibility": [
+                {
+                  "condition": "state",
+                  "entity": "input_boolean.wpf7_raumfuehrung",
+                  "state": "off"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Temperaturen & Hydraulik",
+              "heading_style": "title",
+              "icon": "mdi:thermometer"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_aussentemperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Außen"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_puffersolltemperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Puffer-Soll"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_wp_vorlauf_ist",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "WP Vorlauf"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_vorlauf_solltemperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Vorlauf-Soll"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_rucklauf_ist_temperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Rücklauf"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_delta_t_vorlauf_rucklauf",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Spreizung ΔT"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_quellen_isttemperatur_sole",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Sole Ist"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_heissgas_temperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Heißgas"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_volumenstrom",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Durchfluss"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_wassertemperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Wasser"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Effizienz, COP & Energie",
+              "heading_style": "title",
+              "icon": "mdi:flash"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.stiebel_eltron_wpf_7_geschatzter_cop",
+              "primary": "Live-COP",
+              "secondary": "{% set c = states('sensor.stiebel_eltron_wpf_7_geschatzter_cop') %}{% if is_number(c) %}{{ c | float | round(2) }} · {{ states('sensor.utility_room_stiebel_eltron_wpf_7_cop_volumenstrom_quelle') }}{% else %}Standby · {{ states('sensor.utility_room_stiebel_eltron_wpf_7_cop_volumenstrom_quelle') }}{% endif %}",
+              "icon": "mdi:gauge",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set c = states('sensor.stiebel_eltron_wpf_7_geschatzter_cop') %}{% if not is_number(c) %}blue-grey{% elif c | float >= 4.0 %}green{% elif c | float >= 3.0 %}amber{% else %}red{% endif %}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_warmeleistung_live",
+              "primary": "Wärmeleistung",
+              "secondary": "{% set w = states('sensor.utility_room_stiebel_eltron_wpf_7_warmeleistung_live') %}{{ ('%.2f kW' % (w | float)) if is_number(w) else 'unbekannt' }}",
+              "icon": "mdi:fire",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set w = states('sensor.utility_room_stiebel_eltron_wpf_7_warmeleistung_live') | float(0) %}{{ 'deep-orange' if w > 0.1 else 'blue-grey' }}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.shelly_power_meter_heating_pump_total_active_power",
+              "primary": "El. Leistung",
+              "secondary": "{% set p = states('sensor.shelly_power_meter_heating_pump_total_active_power') %}{% set wp = states('sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_leistung') %}{{ ('%.0f W' % (p | float)) if is_number(p) else '?' }}{% if is_number(wp) %} (Wilo {{ wp | float | round(0) }} W){% endif %}",
+              "icon": "mdi:flash",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set p = states('sensor.shelly_power_meter_heating_pump_total_active_power') | float(0) %}{{ 'amber' if p > 200 else 'blue-grey' }}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_tages_az",
+              "primary": "Tages-AZ",
+              "secondary": "{% set v = states('sensor.heizung_tages_az') %}{{ v | float | round(2) if is_number(v) else 'wartet auf Lauf' }}",
+              "icon": "mdi:chart-line-variant",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set v = states('sensor.heizung_tages_az') %}{{ 'green' if is_number(v) and v|float >= 3.5 else ('amber' if is_number(v) else 'blue-grey') }}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_monats_az",
+              "primary": "Monats-AZ",
+              "secondary": "{% set v = states('sensor.heizung_monats_az') %}{{ v | float | round(2) if is_number(v) else 'sammelt Daten' }}",
+              "icon": "mdi:calendar-month",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set v = states('sensor.heizung_monats_az') %}{{ 'green' if is_number(v) and v|float >= 3.5 else ('amber' if is_number(v) else 'blue-grey') }}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_jahres_az_jaz",
+              "primary": "Jahres-AZ (JAZ)",
+              "secondary": "{% set v = states('sensor.heizung_jahres_az_jaz') %}{{ v | float | round(2) if is_number(v) else 'sammelt Daten' }}",
+              "icon": "mdi:calendar-star",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "{% set v = states('sensor.heizung_jahres_az_jaz') %}{{ 'green' if is_number(v) and v|float >= 3.5 else ('amber' if is_number(v) else 'blue-grey') }}"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_strom_tag",
+              "primary": "Strom heute",
+              "secondary": "{% set v = states('sensor.heizung_strom_tag') | float(none) %}{{ ('%.2f kWh' % v) if v is number else 'unbekannt' }}",
+              "icon": "mdi:lightning-bolt",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "amber"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_strom_monat",
+              "primary": "Strom Monat",
+              "secondary": "{% set v = states('sensor.heizung_strom_monat') | float(none) %}{{ ('%.1f kWh' % v) if v is number else 'unbekannt' }}",
+              "icon": "mdi:lightning-bolt",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "amber"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_strom_jahr",
+              "primary": "Strom Jahr",
+              "secondary": "{% set v = states('sensor.heizung_strom_jahr') | float(none) %}{{ ('%.0f kWh' % v) if v is number else 'unbekannt' }}",
+              "icon": "mdi:lightning-bolt",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "amber"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_warme_tag",
+              "primary": "Wärme heute",
+              "secondary": "{% set v = states('sensor.heizung_warme_tag') | float(none) %}{{ ('%.2f kWh' % v) if v is number else '0,00 kWh' }}",
+              "icon": "mdi:fire-circle",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "deep-orange"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_warme_monat",
+              "primary": "Wärme Monat",
+              "secondary": "{% set v = states('sensor.heizung_warme_monat') | float(none) %}{{ ('%.1f kWh' % v) if v is number else '0,0 kWh' }}",
+              "icon": "mdi:fire-circle",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "deep-orange"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.heizung_warme_jahr",
+              "primary": "Wärme Jahr",
+              "secondary": "{% set v = states('sensor.heizung_warme_jahr') | float(none) %}{{ ('%.0f kWh' % v) if v is number else '0 kWh' }}",
+              "icon": "mdi:fire-circle",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "color": "deep-orange"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.verdichter_laufzeit_heute",
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "name": "Laufzeit heute"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.verdichter_starts_heute",
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "name": "Starts heute"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.verdichter_laufzeit_gestern",
+              "grid_options": {
+                "columns": 4,
+                "rows": 1
+              },
+              "name": "Laufzeit gestern"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Wilo Stratos PICO",
+              "heading_style": "title",
+              "icon": "mdi:pump"
+            },
+            {
+              "type": "custom:mushroom-template-card",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_protokollstatus",
+              "primary": "Wilo Status",
+              "secondary": "{% set st = states('sensor.utility_room_stiebel_eltron_wpf_7_wilo_protokollstatus') %}{% set al = states('sensor.utility_room_stiebel_eltron_wpf_7_wilo_aktive_meldungen') %}{{ st }} · Meldungen: {{ al }}",
+              "icon": "mdi:pump",
+              "tap_action": {
+                "action": "more-info"
+              },
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "color": "{% if is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_storung', 'on') or is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig', 'on') %}red{% elif is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_warnung', 'on') %}amber{% elif is_state('binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_verbunden', 'on') %}green{% else %}blue-grey{% endif %}"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_forderhohe",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Förderhöhe Ist"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_leistung",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Leistung"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_drehzahl",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Drehzahl"
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Durchfluss-Alarm"
+            },
+            {
+              "type": "tile",
+              "entity": "number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_forderhohe",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Sollwert Förderhöhe",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "input_boolean.wpf7_wilo_standby_absenkung",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Standby-Absenkung",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.wilo_strom_tag",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Strom heute"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.wilo_stromanteil_heute",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Anteil heute"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Temperaturverlauf (24h)",
+              "heading_style": "title",
+              "icon": "mdi:chart-line"
+            },
+            {
+              "type": "custom:apexcharts-card",
+              "grid_options": {
+                "columns": "full"
+              },
+              "header": {
+                "show": true,
+                "title": "Letzte 24 Stunden",
+                "show_states": true,
+                "colorize_states": true
+              },
+              "graph_span": "24h",
+              "update_interval": "5min",
+              "yaxis": [
+                {
+                  "id": "t",
+                  "decimals": 0,
+                  "apex_config": {
+                    "tickAmount": 6
+                  }
+                }
+              ],
+              "apex_config": {
+                "chart": {
+                  "height": 320
+                },
+                "legend": {
+                  "show": true
+                },
+                "stroke": {
+                  "width": 2
+                }
+              },
+              "series": [
+                {
+                  "entity": "sensor.living_room_climate_sensor_temperature",
+                  "name": "Wohnzimmer",
+                  "color": "#e67e22",
+                  "yaxis_id": "t",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "10min"
+                  }
+                },
+                {
+                  "entity": "input_number.wpf7_wohnzimmer_zieltemperatur",
+                  "name": "Ziel",
+                  "color": "#27ae60",
+                  "yaxis_id": "t",
+                  "curve": "stepline",
+                  "extend_to": "now",
+                  "float_precision": 1
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_raumsolltemp_i",
+                  "name": "Raum-Soll",
+                  "color": "#8e44ad",
+                  "yaxis_id": "t",
+                  "curve": "stepline",
+                  "extend_to": "now",
+                  "float_precision": 1
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_puffersolltemperatur",
+                  "name": "Puffer-Soll",
+                  "color": "#c0392b",
+                  "yaxis_id": "t",
+                  "curve": "stepline",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "last",
+                    "duration": "10min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_wp_vorlauf_ist",
+                  "name": "Vorlauf",
+                  "color": "#e74c3c",
+                  "yaxis_id": "t",
+                  "opacity": 0.6,
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "10min"
+                  },
+                  "show": {
+                    "in_header": false
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_rucklauf_ist_temperatur",
+                  "name": "Rücklauf",
+                  "color": "#f39c12",
+                  "yaxis_id": "t",
+                  "opacity": 0.6,
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "10min"
+                  },
+                  "show": {
+                    "in_header": false
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_aussentemperatur",
+                  "name": "Außen",
+                  "color": "#3498db",
+                  "yaxis_id": "t",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "10min"
+                  },
+                  "show": {
+                    "in_header": false
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Heizkurve — Außen vs. Vorlauf/Rücklauf (7 Tage)",
+              "heading_style": "title",
+              "icon": "mdi:chart-bell-curve-cumulative"
+            },
+            {
+              "type": "custom:apexcharts-card",
+              "grid_options": {
+                "columns": "full"
+              },
+              "header": {
+                "title": "Letzte 7 Tage",
+                "show": true
+              },
+              "graph_span": "7d",
+              "update_interval": "5min",
+              "apex_config": {
+                "chart": {
+                  "height": 300
+                },
+                "stroke": {
+                  "width": 2,
+                  "curve": "smooth"
+                }
+              },
+              "yaxis": [
+                {
+                  "id": "temp",
+                  "min": "~-5",
+                  "max": "~35",
+                  "decimals": 0,
+                  "apex_config": {
+                    "tickAmount": 8,
+                    "title": {
+                      "text": "°C"
+                    }
+                  }
+                }
+              ],
+              "series": [
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_aussentemperatur",
+                  "name": "Außentemperatur",
+                  "color": "#3498db",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "30min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_wp_vorlauf_ist",
+                  "name": "WP Vorlauf",
+                  "color": "#e74c3c",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "30min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_rucklauf_ist_temperatur",
+                  "name": "Rücklauf",
+                  "color": "#e67e22",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "30min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_puffersolltemperatur",
+                  "name": "Puffer-Soll",
+                  "color": "#8e44ad",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "curve": "stepline",
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "30min"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Wilo Pumpe",
+      "path": "wilo",
+      "icon": "mdi:pump",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Live-Messwerte",
+              "heading_style": "title",
+              "icon": "mdi:gauge"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_volumenstrom",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Volumenstrom"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_forderhohe",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Förderhöhe"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_leistung",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Leistung"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_drehzahl",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Drehzahl"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_wassertemperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wassertemperatur"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_regelungsart",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Regelungsart"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_sollwert",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Sollwert (m)"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_prozent",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Sollwert (%)"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_betriebsstunden",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Betriebsstunden"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_energie",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Energie gesamt"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.wilo_strom_tag",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Strom heute"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.wilo_strom_monat",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Strom Monat"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Direktsteuerung (Wilo BT)",
+              "heading_style": "title",
+              "icon": "mdi:tune"
+            },
+            {
+              "type": "tile",
+              "entity": "switch.utility_room_stiebel_eltron_wpf_7_wilo_pumpe_betrieb",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Pumpe Betrieb",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_forderhohe",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Sollwert Förderhöhe",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "number.utility_room_stiebel_eltron_wpf_7_wilo_sollwert_prozent_steuerung",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Sollwert Prozent",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "slider"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "select.utility_room_stiebel_eltron_wpf_7_wilo_regelungsart_auswahl",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Regelungsart Auswahl",
+              "features": [
+                {
+                  "type": "select-options"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "switch.utility_room_stiebel_eltron_wpf_7_wilo_nachtabsenkung",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Nachtabsenkung",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "switch.utility_room_stiebel_eltron_wpf_7_wilo_druckunabhangiges_ventil",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Druckunabh. Ventil",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "switch.utility_room_stiebel_eltron_wpf_7_wilo_entluftung",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Entlüftung starten",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_entluftung_aktiv",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Entlüftung aktiv"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Automatik & WPF-7-Schutz",
+              "heading_style": "title",
+              "icon": "mdi:shield-check"
+            },
+            {
+              "type": "tile",
+              "entity": "input_boolean.wpf7_wilo_mindestdurchfluss_schutz",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Mindestdurchfluss-Schutz",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_durchfluss_zu_niedrig",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Durchfluss-Alarm (< 0,75 m³/h)"
+            },
+            {
+              "type": "tile",
+              "entity": "input_boolean.wpf7_wilo_standby_absenkung",
+              "grid_options": {
+                "columns": 12,
+                "rows": 1
+              },
+              "name": "Standby-Absenkung",
+              "features": [
+                {
+                  "type": "toggle"
+                }
+              ],
+              "features_position": "inline"
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.wpf7_wilo_sollwert_betrieb",
+              "grid_options": {
+                "columns": 6,
+                "rows": 2
+              },
+              "name": "Sollwert Betrieb",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.wpf7_wilo_sollwert_standby",
+              "grid_options": {
+                "columns": 6,
+                "rows": 2
+              },
+              "name": "Sollwert Standby",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "tile",
+              "entity": "input_number.wpf7_wilo_nachlauf_min",
+              "grid_options": {
+                "columns": 12,
+                "rows": 2
+              },
+              "name": "Nachlaufzeit",
+              "features": [
+                {
+                  "type": "numeric-input",
+                  "style": "buttons"
+                }
+              ],
+              "features_position": "bottom"
+            },
+            {
+              "type": "markdown",
+              "content": "**Funktionsweise:**\n- **Schutz:** Hebt Förderhöhe sofort um `+0,5 m` (max. `3,5 m`) an, falls bei WP-Betrieb `< 0,75 m³/h` anliegen (WPF-7-Min.: `0,70 m³/h`).\n- **Standby-Absenkung:** Hebt **30 s vor Verdichterstart** über das Signal *Quellenpumpe* sofort auf Betriebs-Sollwert an und senkt erst nach Ablauf der Nachlaufzeit ab.",
+              "grid_options": {
+                "columns": 12
+              }
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Pumpenverlauf (24h)",
+              "heading_style": "title",
+              "icon": "mdi:chart-areaspline"
+            },
+            {
+              "type": "custom:apexcharts-card",
+              "grid_options": {
+                "columns": "full"
+              },
+              "header": {
+                "show": true,
+                "title": "Volumenstrom, Förderhöhe & Leistung",
+                "show_states": true,
+                "colorize_states": true
+              },
+              "graph_span": "24h",
+              "update_interval": "2min",
+              "apex_config": {
+                "chart": {
+                  "height": 320
+                },
+                "stroke": {
+                  "width": 2,
+                  "curve": "smooth"
+                }
+              },
+              "yaxis": [
+                {
+                  "id": "flow",
+                  "min": 0,
+                  "max": "~2.0",
+                  "decimals": 2,
+                  "apex_config": {
+                    "title": {
+                      "text": "m³/h"
+                    }
+                  }
+                },
+                {
+                  "id": "head",
+                  "min": 0,
+                  "max": "~5.0",
+                  "decimals": 1,
+                  "opposite": true,
+                  "apex_config": {
+                    "title": {
+                      "text": "m"
+                    }
+                  }
+                },
+                {
+                  "id": "watt",
+                  "min": 0,
+                  "max": "~45",
+                  "decimals": 0,
+                  "show": false
+                }
+              ],
+              "series": [
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_volumenstrom",
+                  "name": "Volumenstrom",
+                  "color": "#2980b9",
+                  "yaxis_id": "flow",
+                  "float_precision": 2,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_forderhohe",
+                  "name": "Förderhöhe",
+                  "color": "#16a085",
+                  "yaxis_id": "head",
+                  "float_precision": 2,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_elektrische_leistung",
+                  "name": "Leistung (W)",
+                  "color": "#f39c12",
+                  "yaxis_id": "watt",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "BLE & Gerätedaten",
+              "heading_style": "title",
+              "icon": "mdi:bluetooth"
+            },
+            {
+              "type": "entities",
+              "show_header_toggle": false,
+              "state_color": true,
+              "grid_options": {
+                "columns": 12
+              },
+              "entities": [
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_verbunden",
+                  "name": "Verbunden"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_authentifiziert",
+                  "name": "Authentifiziert"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_protokollstatus",
+                  "name": "Protokollstatus"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_storung",
+                  "name": "Störung"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wilo_warnung",
+                  "name": "Warnung"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_aktive_meldungen",
+                  "name": "Aktive Meldungen"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_geratename",
+                  "name": "Gerätename"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_pumpentyp",
+                  "name": "Pumpentyp"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_seriennummer",
+                  "name": "Seriennummer"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_softwareversion",
+                  "name": "Softwareversion"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_max_forderhohe",
+                  "name": "Max. Förderhöhe"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_max_volumenstrom",
+                  "name": "Max. Volumenstrom"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "switch.utility_room_stiebel_eltron_wpf_7_wilo_ble_verbindung",
+                  "name": "BLE Verbindung"
+                },
+                {
+                  "entity": "button.utility_room_stiebel_eltron_wpf_7_wilo_authentifizieren",
+                  "name": "Neu authentifizieren"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Diagnose & Wartung",
+      "path": "diagnose",
+      "icon": "mdi:wrench-cog",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Kältekreis (R410A)",
+              "heading_style": "title",
+              "icon": "mdi:snowflake-thermometer"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_hochdruck_kaltekreis",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Hochdruck (HD)"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_kondensationstemperatur_r410a",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Kondensationstemp."
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_verflussiger_gradigkeit",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Verflüssiger-Grädigkeit"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heissgas_uberhitzung",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Heißgas-Überhitzung"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_heissgas_temperatur",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Heißgas"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_quellen_isttemperatur_sole",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Sole Ist"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.stiebel_eltron_wpf_7_quellen_solltemperatur_sole",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Sole Soll (Min)"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_cop_volumenstrom_quelle",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "COP Flow-Quelle"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wp_leistung_ohne_wilo",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "WP ohne Wilo"
+            },
+            {
+              "type": "tile",
+              "entity": "sensor.utility_room_stiebel_eltron_wpf_7_wilo_leistungsanteil",
+              "grid_options": {
+                "columns": 6,
+                "rows": 1
+              },
+              "name": "Wilo Anteil"
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "WPM i Relais & Zähler",
+              "heading_style": "title",
+              "icon": "mdi:electric-switch"
+            },
+            {
+              "type": "entities",
+              "show_header_toggle": false,
+              "state_color": true,
+              "grid_options": {
+                "columns": 12
+              },
+              "entities": [
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_verdichter_relais",
+                  "name": "Verdichter (Bit 2+3)"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_quellenpumpe",
+                  "name": "Quellenpumpe (Bit 8)"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_pufferladepumpe",
+                  "name": "Pufferladepumpe (Bit 6)"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizkreispumpe",
+                  "name": "Heizkreispumpe (Bit 5)"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_1_dhc1",
+                  "name": "Heizstab DHC1 (Bit 0)"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_wp_heizstab_stufe_2_dhc2",
+                  "name": "Heizstab DHC2 (Bit 1)"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_verdichter_betriebsstunden",
+                  "name": "Verdichter gesamt"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heizstab_stufe_1_betriebsstunden",
+                  "name": "Heizstab Stufe 1 gesamt"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heizstab_stufe_2_betriebsstunden",
+                  "name": "Heizstab Stufe 2 gesamt"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_verdichter_rest_stillstandszeit",
+                  "name": "Rest-Stillstandszeit"
+                },
+                {
+                  "entity": "binary_sensor.utility_room_stiebel_eltron_wpf_7_sommerbetrieb",
+                  "name": "Sommerbetrieb-Automatik (18 °C)"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_fehlerstatus_klartext",
+                  "name": "Fehlerstatus"
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_fehler_code",
+                  "name": "Fehler-Code"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_relaisstatus_bits",
+                  "name": "Relais-Bits (0x0a20)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "CAN-Bus & ESP32",
+              "heading_style": "title",
+              "icon": "mdi:lan"
+            },
+            {
+              "type": "entities",
+              "show_header_toggle": false,
+              "state_color": true,
+              "grid_options": {
+                "columns": 12
+              },
+              "entities": [
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_can_state",
+                  "name": "CAN-Zustand"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_can_bus_errors",
+                  "name": "Busfehler"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_can_tx_error_counter",
+                  "name": "TX-Fehler"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_can_rx_error_counter",
+                  "name": "RX-Fehler"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_wifi_signal_dbm_2",
+                  "name": "WLAN"
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_firmware_version",
+                  "name": "Firmware"
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_esphome_version",
+                  "name": "ESPHome"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_uptime",
+                  "name": "Uptime"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_reset_grund",
+                  "name": "Reset-Grund"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heap_frei",
+                  "name": "Heap frei"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_heap_grosster_block",
+                  "name": "Heap größter Block"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_psram_frei",
+                  "name": "PSRAM frei"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 3,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Kältekreis- & Leistungsverlauf (24h)",
+              "heading_style": "title",
+              "icon": "mdi:chart-line"
+            },
+            {
+              "type": "custom:apexcharts-card",
+              "grid_options": {
+                "columns": "full"
+              },
+              "header": {
+                "show": true,
+                "title": "Hochdruck (bar), Heißgas, Vorlauf & Sole",
+                "show_states": true,
+                "colorize_states": true
+              },
+              "graph_span": "24h",
+              "update_interval": "5min",
+              "apex_config": {
+                "chart": {
+                  "height": 320
+                },
+                "stroke": {
+                  "width": 2
+                }
+              },
+              "yaxis": [
+                {
+                  "id": "temp",
+                  "min": 0,
+                  "max": "~70",
+                  "decimals": 0,
+                  "apex_config": {
+                    "title": {
+                      "text": "°C"
+                    }
+                  }
+                },
+                {
+                  "id": "bar",
+                  "min": 5,
+                  "max": "~35",
+                  "decimals": 0,
+                  "opposite": true,
+                  "apex_config": {
+                    "title": {
+                      "text": "bar"
+                    }
+                  }
+                }
+              ],
+              "series": [
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_hochdruck_kaltekreis",
+                  "name": "Hochdruck (bar)",
+                  "color": "#9b59b6",
+                  "yaxis_id": "bar",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_heissgas_temperatur",
+                  "name": "Heißgas",
+                  "color": "#e74c3c",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_kondensationstemperatur_r410a",
+                  "name": "Kondensation (R410A)",
+                  "color": "#e67e22",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_wp_vorlauf_ist",
+                  "name": "WP Vorlauf",
+                  "color": "#f1c40f",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_quellen_isttemperatur_sole",
+                  "name": "Sole Ist",
+                  "color": "#3498db",
+                  "yaxis_id": "temp",
+                  "float_precision": 1,
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "5min"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Wartung & WPM i",
+              "heading_style": "title",
+              "icon": "mdi:wrench"
+            },
+            {
+              "type": "entities",
+              "show_header_toggle": false,
+              "state_color": true,
+              "grid_options": {
+                "columns": 12
+              },
+              "entities": [
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_datum",
+                  "name": "WPM i Datum"
+                },
+                {
+                  "entity": "sensor.stiebel_eltron_wpf_7_uhrzeit",
+                  "name": "WPM i Uhrzeit"
+                },
+                {
+                  "entity": "button.stiebel_eltron_wpf_7_update_uhrzeit",
+                  "name": "Uhrzeit senden"
+                },
+                {
+                  "entity": "button.stiebel_eltron_wpf_7_update_datum",
+                  "name": "Datum senden"
+                },
+                {
+                  "type": "section",
+                  "label": "Sollwerte & SG Ready"
+                },
+                {
+                  "entity": "number.stiebel_eltron_wpf_7_raum_solltemperatur_ii",
+                  "name": "Raum-Soll II"
+                },
+                {
+                  "entity": "number.stiebel_eltron_wpf_7_raum_solltemperatur_iii",
+                  "name": "Raum-Soll III"
+                },
+                {
+                  "entity": "number.utility_room_stiebel_eltron_wpf_7_sg_ready_boost_zustand_3",
+                  "name": "SG Ready Boost 3"
+                },
+                {
+                  "entity": "number.utility_room_stiebel_eltron_wpf_7_sg_ready_boost_zustand_4",
+                  "name": "SG Ready Boost 4"
+                },
+                {
+                  "type": "section",
+                  "label": "CAN-Brücke"
+                },
+                {
+                  "type": "button",
+                  "name": "CAN-Brücke neu starten",
+                  "icon": "mdi:restart",
+                  "action_name": "Neustart",
+                  "tap_action": {
+                    "action": "perform-action",
+                    "perform_action": "button.press",
+                    "target": {
+                      "entity_id": "button.stiebel_eltron_wpf_7_restart"
+                    },
+                    "confirmation": {
+                      "text": "CAN-Brücke (ESP32) wirklich neu starten? Die Wärmepumpe läuft weiter."
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "grid",
+          "column_span": 2,
+          "cards": [
+            {
+              "type": "heading",
+              "heading": "Automationen & Roh-Diagnose",
+              "heading_style": "title",
+              "icon": "mdi:robot"
+            },
+            {
+              "type": "entities",
+              "show_header_toggle": false,
+              "state_color": true,
+              "grid_options": {
+                "columns": 12
+              },
+              "entities": [
+                {
+                  "entity": "automation.wpf_7_wilo_mindestdurchfluss_schutz",
+                  "name": "Automation: Mindestdurchfluss-Schutz"
+                },
+                {
+                  "entity": "automation.wpf_7_wilo_standby_absenkung",
+                  "name": "Automation: Wilo Standby-Absenkung"
+                },
+                {
+                  "entity": "automation.wpf_7_storungs_heizstab_alarm",
+                  "name": "Automation: Störungs- & Heizstab-Alarm"
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "entity": "binary_sensor.stiebel_eltron_wpf_7_brenner",
+                  "name": "Signal BRENNER (0x601)"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_maschinendruck_roh",
+                  "name": "Maschinendruck (roh, 0x0268)"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_relaisstatus_roh",
+                  "name": "Relaisstatus (roh, 0x0a20)"
+                },
+                {
+                  "entity": "sensor.utility_room_stiebel_eltron_wpf_7_zweiter_we_status_roh",
+                  "name": "WP_EVU / 2. WE (roh, 0xfdab)"
+                },
+                {
+                  "entity": "switch.utility_room_stiebel_eltron_wpf_7_can_busmonitor_nur_lesen",
+                  "name": "CAN-Busmonitor (nur lesen)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

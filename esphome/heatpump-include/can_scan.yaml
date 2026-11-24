@@ -1,0 +1,46 @@
+#
+# Read-only CAN scan (ressl fork 2.3.0). Logic: ha-stiebel-control/can_scan.h
+#
+# Nothing happens until "CAN-Scan starten (nur lesen)" is pressed. The scan only
+# sends Elster READ requests (one every 750 ms), first to find the bus members
+# that answer, then for every index of ElsterTable on each of them. Expect
+# roughly 45 minutes per answering member. Results: MQTT heatingpump/scan/#
+# (retained) and the log tag CAN_SCAN. The scan aborts itself on CAN errors.
+#
+
+button:
+  - platform: template
+    name: "CAN-Scan starten (nur lesen)"
+    id: can_scan_start_button
+    icon: "mdi:radar"
+    entity_category: config
+    on_press:
+      - lambda: canScanStart();
+
+  - platform: template
+    name: "CAN-Scan abbrechen"
+    id: can_scan_stop_button
+    icon: "mdi:stop-circle-outline"
+    entity_category: config
+    on_press:
+      - lambda: canScanStop("abgebrochen (Button)");
+
+  - platform: template
+    name: "CAN-Scan Ergebnisse erneut senden"
+    id: can_scan_republish_button
+    icon: "mdi:upload"
+    entity_category: diagnostic
+    on_press:
+      - lambda: canScanRepublish();
+
+text_sensor:
+  - platform: template
+    name: "CAN-Scan Status"
+    id: can_scan_status
+    icon: "mdi:radar"
+    entity_category: diagnostic
+
+interval:
+  - interval: 200ms
+    then:
+      - lambda: canScanTick();

@@ -1,0 +1,204 @@
+#
+# Wilo-Smart Connect module BT (4239241) — Stratos PICO
+# Included as package in heatingpump.yaml (2.7.0-wpf7.2)
+#
+# Wi-Fi / BLE 2.4 GHz coexistence:
+# - esp32_ble uses PSRAM offload + single connection slot (max_connections: 1)
+# - esp32_ble_tracker scans at gentle <10% duty cycle (30ms / 320ms) and stops
+#   scanning immediately while connected to the pump (0% scan airtime)
+#
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [wilo_bt]
+
+esp32_ble:
+  max_connections: 1
+  use_psram: true
+
+esp32_ble_tracker:
+  software_coexistence: true
+  scan_parameters:
+    interval: 320ms
+    window: 30ms
+    active: true
+    continuous: true
+
+ble_client:
+  - mac_address: !secret wilo_mac_address
+    id: wilo_ble_client
+    auto_connect: true
+    on_connect:
+      then:
+        - esp32_ble_tracker.stop_scan:
+    on_disconnect:
+      then:
+        - if:
+            condition:
+              switch.is_on: wilo_ble_connection
+            then:
+              - esp32_ble_tracker.start_scan:
+                  continuous: true
+
+switch:
+  - platform: ble_client
+    ble_client_id: wilo_ble_client
+    id: wilo_ble_connection
+    name: "Wilo BLE Verbindung"
+    entity_category: config
+    restore_mode: RESTORE_DEFAULT_ON
+    on_turn_on:
+      then:
+        - esp32_ble_tracker.start_scan:
+            continuous: true
+    on_turn_off:
+      then:
+        - esp32_ble_tracker.stop_scan:
+
+wilo_bt:
+  id: wilo_pump
+  ble_client_id: wilo_ble_client
+  update_interval: 5s
+  config_poll_interval: 60s
+  debug_protocol: false
+  # Optional: set a fixed PIN via secrets.yaml, or leave commented to enter the display PIN in Home Assistant
+  # pin: !secret wilo_pin
+  auto_authenticate: false
+
+  # Sitzungs-Authentifizierung (4-stelliger Display-PIN nach Connect/Reboot)
+  session_pin:
+    name: "Wilo Session PIN"
+    mode: box
+
+  authenticate:
+    name: "Wilo Authentifizieren"
+
+  request_pin:
+    name: "Wilo Neuen PIN anfordern"
+
+  # Steuerung (verifiziert aus Wilo-Assistant 6.13.0)
+  pump_run:
+    name: "Wilo Pumpe Betrieb"
+
+  setpoint_control:
+    name: "Wilo Sollwert Förderhöhe"
+    mode: box
+
+  setpoint_percent_control:
+    name: "Wilo Sollwert Prozent Steuerung"
+    mode: slider
+
+  control_mode_select:
+    name: "Wilo Regelungsart Auswahl"
+
+  night_setback:
+    name: "Wilo Nachtabsenkung"
+
+  pressure_independent_valve:
+    name: "Wilo Druckunabhängiges Ventil"
+
+  air_venting:
+    name: "Wilo Entlüftung"
+
+  manual_restart:
+    name: "Wilo Manueller Neustart"
+
+  reset_energy:
+    name: "Wilo Stromzähler zurücksetzen"
+
+  # Status & Fehlerdiagnose (0x0C8B + 0x0C8C)
+  connected:
+    id: wilo_connected_bs
+    name: "Wilo Verbunden"
+
+  authenticated:
+    id: wilo_authenticated_bs
+    name: "Wilo Authentifiziert"
+
+  waiting_for_pin:
+    name: "Wilo Wartet auf PIN"
+
+  active_fault:
+    name: "Wilo Störung"
+
+  active_warning:
+    name: "Wilo Warnung"
+
+  active_alarms:
+    name: "Wilo Aktive Meldungen"
+
+  air_venting_active:
+    name: "Wilo Entlüftung Aktiv"
+
+  air_venting_remaining:
+    name: "Wilo Entlüftung Restzeit"
+
+  protocol_state:
+    name: "Wilo Protokollstatus"
+
+  # Live-Messwerte
+  flow_rate:
+    id: wilo_flow_rate
+    name: "Wilo Volumenstrom"
+
+  differential_pressure:
+    name: "Wilo Förderhöhe"
+
+  medium_temperature:
+    id: wilo_medium_temp
+    name: "Wilo Wassertemperatur"
+
+  power:
+    id: wilo_power_sensor
+    name: "Wilo Elektrische Leistung"
+
+  energy:
+    name: "Wilo Elektrische Energie"
+
+  speed:
+    name: "Wilo Drehzahl"
+
+  operating_hours:
+    name: "Wilo Betriebsstunden"
+
+  setpoint:
+    name: "Wilo Sollwert"
+
+  setpoint_percent:
+    name: "Wilo Sollwert Prozent"
+
+  control_mode:
+    name: "Wilo Regelungsart"
+
+  # Gerätedaten & Diagnose
+  device_name:
+    name: "Wilo Gerätename"
+
+  pump_type:
+    name: "Wilo Pumpentyp"
+
+  serial_number:
+    name: "Wilo Seriennummer"
+
+  software_version:
+    name: "Wilo Softwareversion"
+
+  max_head:
+    name: "Wilo Max Förderhöhe"
+
+  max_flow:
+    name: "Wilo Max Volumenstrom"
+
+  pump_status_code:
+    name: "Wilo Installationsart Code"
+
+  control_mode_code:
+    name: "Wilo Regelungsart Code"
+
+  raw_static_json:
+    name: "Wilo Raw Static JSON"
+
+  raw_live_json:
+    name: "Wilo Raw Live JSON"

@@ -1,0 +1,706 @@
+#
+# Native ESPHome Sensors for WPF 7 Heat Pump
+# These sensors appear directly in Home Assistant via ESPHome API
+# MQTT remains as optional secondary channel
+# Based on live MQTT data: 2026-02-10 01:31
+# All signal names verified to exist in ElsterTable.h and to return valid values
+#
+# ressl 2.3.0 (2026-11-16):
+#  - removed entities that never received a value: "Vorlauf Solltemperatur",
+#    "Initialisierung", "Betriebsart"
+#  - setpoint numbers and the mode select mirror the values read from the WPM i
+#    (lambda) instead of optimistic/restored values; writes are skipped when the
+#    WPM i already has the requested value
+#  - mode select offers the modes the WPM i really knows ("Heizen"/"Aus" did not
+#    exist and were refused); Notbetrieb is shown but cannot be set
+#  - EVU Sperre: device_class lock removed (on = Sperre aktiv was shown as "unlocked")
+#  - Firmware Version shows the project version instead of a hard-coded "v0.15"
+#
+
+#########################################
+#                                       #
+#   TEMPERATURE SENSORS                 #
+#                                       #
+#########################################
+sensor:
+  # ========================================================================
+  # ACTUAL TEMPERATURES (from KESSEL 0x180) - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Außentemperatur"
+    id: aussentemp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:thermometer"
+    
+  - platform: template
+    name: "Rücklauf Ist-Temperatur"
+    id: ruecklaufisttemp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:thermometer-chevron-down"
+    
+  - platform: template
+    name: "WP Vorlauf Ist"
+    id: wpvorlaufist
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:thermometer-chevron-up"
+    
+  # SAMMLERISTTEMP removed — no solar thermal connected
+
+  # ========================================================================
+  # SOLE/WASSER SPECIFIC (WPF 7) - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Quellen-Solltemperatur (Sole)"
+    id: quellensolltemperatur
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:water-thermometer-outline"
+    
+  - platform: template
+    name: "Heißgas-Temperatur"
+    id: heissgas_temp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:fire"
+
+  # ========================================================================
+  # DIAGNOSTICS (ressl 2.5.0) - read-only, raw values from the CAN scan of
+  # 2026-11-16. Meaning still to be validated during a compressor run, see
+  # signal_requests_wpf7.h (index meaning after chriss1980, WPMiw).
+  # ========================================================================
+  - platform: template
+    name: "Quellen-Isttemperatur (Sole)"
+    id: quelle_ist
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:water-thermometer"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Maschinendruck (roh)"
+    id: maschinendruck_raw
+    state_class: measurement
+    accuracy_decimals: 0
+    icon: "mdi:gauge"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Relaisstatus (roh)"
+    id: relaisstatus_raw
+    accuracy_decimals: 0
+    icon: "mdi:electric-switch"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Zweiter WE Status (roh)"
+    id: zweiter_we_status_raw
+    accuracy_decimals: 0
+    icon: "mdi:heating-coil"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Laufzeit WP1 (roh)"
+    id: laufzeit_wp1_raw
+    accuracy_decimals: 0
+    icon: "mdi:timer-outline"
+    entity_category: diagnostic
+
+  # ========================================================================
+  # WPM i DECODED SENSORS (2.9.0, ComfortSoft 4.2.0 & 2026-11-16 CAN scan)
+  # ========================================================================
+  - platform: template
+    name: "Hochdruck Kältekreis"
+    id: hochdruck_kaeltekreis
+    unit_of_measurement: "bar"
+    device_class: pressure
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:gauge"
+
+  - platform: template
+    name: "Kondensationstemperatur (R410A)"
+    id: kondensationstemp_r410a
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:thermometer-lines"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Verflüssiger-Grädigkeit"
+    id: verfluessiger_graedigkeit
+    unit_of_measurement: "K"
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:delta"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Heißgas-Überhitzung"
+    id: heissgas_ueberhitzung
+    unit_of_measurement: "K"
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:fire-alert"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Verdichter Betriebsstunden"
+    id: verdichter_betriebsstunden
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+    accuracy_decimals: 0
+    icon: "mdi:counter"
+
+  - platform: template
+    name: "Heizstab Stufe 1 Betriebsstunden"
+    id: dhc1_betriebsstunden
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+    accuracy_decimals: 0
+    icon: "mdi:heating-coil"
+
+  - platform: template
+    name: "Heizstab Stufe 2 Betriebsstunden"
+    id: dhc2_betriebsstunden
+    unit_of_measurement: "h"
+    device_class: duration
+    state_class: total_increasing
+    accuracy_decimals: 0
+    icon: "mdi:heating-coil"
+
+  - platform: template
+    name: "Verdichter Rest-Stillstandszeit"
+    id: verdichter_rest_stillstand
+    unit_of_measurement: "min"
+    device_class: duration
+    state_class: measurement
+    accuracy_decimals: 0
+    icon: "mdi:timer-sand"
+
+  - platform: template
+    name: "Heizkurve"
+    id: heizkurve_wert
+    state_class: measurement
+    accuracy_decimals: 2
+    icon: "mdi:chart-bell-curve-cumulative"
+
+  - platform: template
+    name: "Vorlauf Solltemperatur"
+    id: vorlauf_solltemp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:thermometer-auto"
+
+  # ========================================================================
+  # HEATING CIRCUIT - WORKING ✅
+  # ========================================================================
+  # 2.5.0: the room temperature read-back sensors of 2.4.0 were removed with the feed
+
+  # "Vorlauf Solltemperatur" removed in 2.3.0: VORLAUFSOLLTEMP answers -255 and is not polled
+
+  # ========================================================================
+  # BUFFER/STORAGE - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Puffersolltemperatur"
+    id: puffersoll
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:storage-tank"
+
+  # ========================================================================
+  # ROOM TEMPERATURE SETPOINTS (from MANAGER 0x480) - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Raumsolltemp I"
+    id: raumsolltemp_i
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:home-thermometer"
+    
+  - platform: template
+    name: "Raumsolltemp II"
+    id: raumsolltemp_ii
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:home-thermometer"
+    
+  - platform: template
+    name: "Raumsolltemp III"
+    id: raumsolltemp_iii
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:home-thermometer"
+    
+  - platform: template
+    name: "Raumsolltemp Nacht"
+    id: raumsolltemp_nacht
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:weather-night"
+
+  # ========================================================================
+  # BUFFER TANK SETPOINTS (from MANAGER 0x480) - WORKING ✅
+  # Read-only display sensors (actual setpoint control via number entities)
+  # ========================================================================
+  - platform: template
+    name: "Puffer Solltemperatur (Anzeige)"
+    id: einstell_speichersolltemp
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:storage-tank"
+    
+  - platform: template
+    name: "Puffer Solltemperatur 2 (Anzeige)"
+    id: einstell_speichersolltemp2
+    unit_of_measurement: "°C"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:storage-tank-outline"
+
+  # ========================================================================
+  # CALCULATED SENSORS - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Delta T (Vorlauf - Rücklauf)"
+    id: delta_t
+    unit_of_measurement: "K"
+    device_class: temperature
+    state_class: measurement
+    accuracy_decimals: 2
+    icon: "mdi:delta"
+    
+  # ========================================================================
+  # ELECTRICAL POWER & COP ESTIMATION
+  # ========================================================================
+  - platform: template
+    name: "Elektrische Leistung (Anzeige)"
+    id: electrical_power_display
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 0
+    icon: "mdi:flash"
+
+  - platform: template
+    name: "Verdichter aktiv"
+    id: compressor_running
+    unit_of_measurement: ""
+    accuracy_decimals: 0
+    icon: "mdi:pump"
+    # 1 = running, 0 = standby (threshold: >200W = compressor on, <=200W = circulation pump only)
+
+  - platform: template
+    name: "Geschätzte Wärmeleistung"
+    id: estimated_thermal_power
+    unit_of_measurement: "kW"
+    state_class: measurement
+    accuracy_decimals: 2
+    icon: "mdi:fire"
+    # Live Wilo Stratos PICO flow (fallback 0.90 m³/h) × 1.163 × ΔT; NaN when compressor off
+
+  - platform: template
+    name: "Wärmeleistung (Live)"
+    id: thermal_power_live
+    unit_of_measurement: "kW"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    icon: "mdi:fire"
+    # Continuous thermal power (0.00 kW when compressor off) for exact HA Riemann energy & JAZ
+
+  - platform: template
+    name: "Geschätzter COP"
+    id: estimated_cop
+    unit_of_measurement: ""
+    state_class: measurement
+    accuracy_decimals: 2
+    icon: "mdi:gauge"
+    # System COP = thermal power / Shelly total active power (only when compressor running)
+
+  - platform: template
+    name: "WP Leistung (ohne Wilo)"
+    id: wp_power_without_wilo
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 0
+    icon: "mdi:flash-outline"
+    entity_category: diagnostic
+
+  - platform: template
+    name: "Wilo Leistungsanteil"
+    id: wilo_power_share
+    unit_of_measurement: "%"
+    state_class: measurement
+    accuracy_decimals: 1
+    icon: "mdi:percent"
+    entity_category: diagnostic
+
+  # ========================================================================
+  # ERROR STATUS - WORKING ✅
+  # ========================================================================
+  - platform: template
+    name: "Fehler-Code"
+    id: fehlermeldung
+    state_class: measurement
+    accuracy_decimals: 0
+    icon: "mdi:alert-circle"
+
+#########################################
+#                                       #
+#   BINARY SENSORS - WORKING ✅         #
+#                                       #
+#########################################
+binary_sensor:
+  # on = EVU Sperre aktiv. No device_class: "lock" would show on as "unlocked".
+  - platform: template
+    name: "EVU Sperre aktiv"
+    id: evu_sperre_aktiv
+    icon: "mdi:electric-switch"
+
+  # "Initialisierung" removed in 2.3.0: the MANAGER never answered INITIALISIERUNG
+
+  - platform: template
+    name: "Brenner"
+    id: brenner
+    device_class: heat
+    icon: "mdi:fire"
+
+  # Decoded SAMMEL_RELAISSTATUS (0x0a20) — ComfortSoft 4.2.0 CWpmIStatusPage
+  - platform: template
+    name: "WP Verdichter (Relais)"
+    id: relais_verdichter
+    device_class: running
+    icon: "mdi:engine"
+
+  - platform: template
+    name: "WP Quellenpumpe"
+    id: relais_quellenpumpe
+    device_class: running
+    icon: "mdi:pump"
+
+  - platform: template
+    name: "WP Pufferladepumpe"
+    id: relais_pufferladepumpe
+    device_class: running
+    icon: "mdi:pump"
+
+  - platform: template
+    name: "WP Heizkreispumpe"
+    id: relais_heizkreispumpe
+    device_class: running
+    icon: "mdi:pump"
+
+  - platform: template
+    name: "WP Heizstab Stufe 1 (DHC1)"
+    id: relais_dhc1
+    device_class: heat
+    icon: "mdi:heating-coil"
+
+  - platform: template
+    name: "WP Heizstab Stufe 2 (DHC2)"
+    id: relais_dhc2
+    device_class: heat
+    icon: "mdi:heating-coil"
+
+  - platform: template
+    name: "Sommerbetrieb"
+    id: sommerbetrieb_aktiv
+    icon: "mdi:weather-sunny"
+
+  - platform: template
+    name: "WP Störung aktiv"
+    id: wp_stoerung_aktiv
+    device_class: problem
+    icon: "mdi:alert-octagon"
+
+  - platform: template
+    name: "WP Durchfluss zu niedrig"
+    id: wp_durchfluss_zu_niedrig
+    device_class: problem
+    icon: "mdi:water-alert"
+
+#########################################
+#                                       #
+#   TEXT SENSORS - WORKING ✅           #
+#                                       #
+#########################################
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    id: esphome_version
+    icon: "mdi:package-variant"
+
+  - platform: template
+    name: "Firmware Version"
+    id: firmware_version
+    icon: "mdi:tag"
+    update_interval: 6h
+    lambda: 'return {ESPHOME_PROJECT_VERSION};'
+
+  - platform: template
+    name: "Betriebsmodus (Anzeige)"
+    id: programmschalter
+    icon: "mdi:state-machine"
+    
+  # "Betriebsart" removed in 2.3.0: derived from SOMMERBETRIEB, which is not polled
+
+  - platform: template
+    name: "Datum"
+    id: datum
+    icon: "mdi:calendar"
+    
+  - platform: template
+    name: "Uhrzeit"
+    id: uhrzeit
+    icon: "mdi:clock"
+
+  # 2.5.0: set bits of SAMMEL_RELAISSTATUS (bit 0 = LSB), e.g. "0x016C: 2,3,5,6,8"
+  - platform: template
+    name: "Relaisstatus (Bits)"
+    id: relaisstatus_bits
+    icon: "mdi:electric-switch"
+    entity_category: diagnostic
+
+  # 2.9.0: human-readable relay summary, WPM i error text, and COP flow source
+  - platform: template
+    name: "Relaisstatus (Klartext)"
+    id: relaisstatus_klartext
+    icon: "mdi:electric-switch"
+
+  - platform: template
+    name: "Fehlerstatus (Klartext)"
+    id: fehler_status
+    icon: "mdi:alert-circle-outline"
+
+  - platform: template
+    name: "COP Volumenstrom-Quelle"
+    id: cop_flow_source
+    icon: "mdi:water-pump"
+    entity_category: diagnostic
+
+#########################################
+#                                       #
+#   WRITABLE CONTROLS - WORKING ✅      #
+#                                       #
+#########################################
+number:
+  # Writable setpoints with direct CAN bus control (ressl 2.3.0: the numbers
+  # show the value read back from the WPM i; nothing is written at boot).
+  # NOTE: EINSTELL_SPEICHERSOLLTEMP(2) is the DHW setpoint of the WPM i. The WPF 7
+  # has no DHW tank, so "Puffer Sollwert" has no effect on heating. The actual
+  # buffer target is "Puffersolltemperatur" (heating curve). Names kept for the
+  # existing entity IDs.
+  - platform: template
+    name: "Puffer Sollwert"
+    id: speichersolltemp_setpoint
+    min_value: 10
+    max_value: 65
+    step: 1
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: box
+    icon: "mdi:storage-tank"
+    update_interval: 10s
+    lambda: |-
+      float v = id(einstell_speichersolltemp).state;
+      if (std::isnan(v) || v < 10 || v > 65) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(einstell_speichersolltemp).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "EINSTELL_SPEICHERSOLLTEMP", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "EINSTELL_SPEICHERSOLLTEMP");
+
+  - platform: template
+    name: "Puffer Sollwert 2"
+    id: speichersolltemp2_setpoint
+    min_value: 10
+    max_value: 65
+    step: 1
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: box
+    icon: "mdi:storage-tank-outline"
+    update_interval: 10s
+    lambda: |-
+      float v = id(einstell_speichersolltemp2).state;
+      if (std::isnan(v) || v < 10 || v > 65) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(einstell_speichersolltemp2).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "EINSTELL_SPEICHERSOLLTEMP2", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "EINSTELL_SPEICHERSOLLTEMP2");
+
+  - platform: template
+    name: "Raum Solltemperatur Tag"
+    id: raumsolltemp_tag_setpoint
+    min_value: 15
+    max_value: 30
+    step: 0.5
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: slider
+    icon: "mdi:home-thermometer"
+    update_interval: 10s
+    lambda: |-
+      float v = id(raumsolltemp_i).state;
+      if (std::isnan(v) || v < 15 || v > 30) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(raumsolltemp_i).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_I", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_I");
+
+  - platform: template
+    name: "Raum Solltemperatur II"
+    id: raumsolltemp_ii_setpoint
+    min_value: 15
+    max_value: 30
+    step: 0.5
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: slider
+    icon: "mdi:home-thermometer"
+    update_interval: 10s
+    lambda: |-
+      float v = id(raumsolltemp_ii).state;
+      if (std::isnan(v) || v < 15 || v > 30) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(raumsolltemp_ii).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_II", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_II");
+
+  - platform: template
+    name: "Raum Solltemperatur III"
+    id: raumsolltemp_iii_setpoint
+    min_value: 15
+    max_value: 30
+    step: 0.5
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: slider
+    icon: "mdi:home-thermometer"
+    update_interval: 10s
+    lambda: |-
+      float v = id(raumsolltemp_iii).state;
+      if (std::isnan(v) || v < 15 || v > 30) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(raumsolltemp_iii).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_III", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_III");
+
+  - platform: template
+    name: "Raum Solltemperatur Nacht"
+    id: raumsolltemp_nacht_setpoint
+    min_value: 15
+    max_value: 30
+    step: 0.5
+    unit_of_measurement: "°C"
+    device_class: temperature
+    mode: slider
+    icon: "mdi:home-thermometer-outline"
+    update_interval: 10s
+    lambda: |-
+      float v = id(raumsolltemp_nacht).state;
+      if (std::isnan(v) || v < 15 || v > 30) return {};
+      return v;
+    set_action:
+      - lambda: |-
+          float cur = id(raumsolltemp_nacht).state;
+          if (!std::isnan(cur) && fabsf(cur - x) < 0.05f) return;   // WPM i already has it
+          char valueStr[16];
+          snprintf(valueStr, sizeof(valueStr), "%.1f", x);
+          writeSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_NACHT", valueStr);
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "RAUMSOLLTEMP_NACHT");
+
+select:
+  # Operating mode of the WPM i (PROGRAMMSCHALTER). Options = BetriebsartList
+  # (WPM2 naming). The select shows the mode read from the WPM i.
+  - platform: template
+    name: "Betriebsmodus Auswahl"
+    id: betriebsmodus_select
+    icon: "mdi:state-machine"
+    options:
+      - "Automatik"
+      - "Tagbetrieb"
+      - "Absenkbetrieb"
+      - "Bereitschaft"
+      - "Warmwasser"
+      - "Notbetrieb"
+    update_interval: 5s
+    lambda: |-
+      if (hscLastProgrammschalter.empty()) return {};
+      return hscLastProgrammschalter;
+    set_action:
+      - lambda: |-
+          if (x == "Notbetrieb") {
+            ESP_LOGW("MODE", "Notbetrieb cannot be set from Home Assistant (electric heater only)");
+            return;
+          }
+          if (x == hscLastProgrammschalter) return;   // WPM i already in this mode
+          writeSignal(&CanMembers[cm_manager], "PROGRAMMSCHALTER", x.c_str());
+          delay(100);
+          readSignal(&CanMembers[cm_manager], "PROGRAMMSCHALTER");

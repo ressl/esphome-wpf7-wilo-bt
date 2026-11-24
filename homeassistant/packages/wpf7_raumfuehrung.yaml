@@ -1,0 +1,231 @@
+###############################################################################
+#
+#   WPF 7: Raumführung Wohnzimmer (ressl, 2026-11-16)
+#
+#   The WPM i has no room sensor (no FEK/FE7), so its heating curve only uses
+#   the outside temperature. This package closes the loop in Home Assistant:
+#   it shifts the WPM i room setpoint (RAUMSOLLTEMP_I and _NACHT, both written
+#   via the ESPHome numbers of the CAN bridge) so that the living room reaches
+#   the target temperature set on the dashboard.
+#
+#   Tested 2026-11-16 22:49: room setpoint -1.0 K -> buffer setpoint -1.2 K
+#   within 25 s (23.8 -> 22.6 degC), so the lever acts immediately.
+#
+#   Controller (slow PI, every 30 min, slider changes after 30 s):
+#     e     = target - living room temperature
+#     I    += 0.05 * e per 30 min (only on the 30-min tick), limited to +-2 K,
+#             frozen while the output is limited (anti-windup)
+#     soll  = 21.0 + 1.0 * e + I, limited to 19.0 ... 23.0, rounded to 0.5 K
+#   kp = 1.0 corresponds to the FEK default room influence (K = 5 with the
+#   heating curve S = 0.23: 1.15 K return temperature per K room deviation).
+#   Writes happen only when the rounded setpoint changes (EEPROM-friendly).
+#
+#   Safety:
+#     - switched off: day and night setpoint go back to 21.0 degC once
+#     - living room sensor invalid or silent > 60 min: back to 21.0 degC
+#     - paused (no write) while SG Ready is not "2 - Normal", the operating
+#       mode is not "Automatik", the CAN bridge is not running or the WPM i
+#       setpoints are unavailable
+#     - max. shift +-2 K around 21.0 degC; if HA stops, the last value stays
+#
+###############################################################################
+
+input_number:
+  wpf7_wohnzimmer_zieltemperatur:
+    name: "Wohnzimmer Zieltemperatur"
+    min: 18
+    max: 25
+    step: 0.5
+    unit_of_measurement: "°C"
+    mode: slider
+    icon: mdi:home-thermometer
+  # internal state of the PI controller (I part); shown read-only on the dashboard
+  wpf7_raumfuehrung_integral:
+    name: "Raumführung I-Anteil"
+    min: -2
+    max: 2
+    step: 0.001
+    unit_of_measurement: "K"
+    mode: box
+    icon: mdi:sigma
+
+input_boolean:
+  wpf7_raumfuehrung:
+    name: "Raumführung Wohnzimmer"
+    icon: mdi:home-thermometer-outline
+
+automation:
+  - id: wpf7_raumfuehrung_wohnzimmer
+    alias: "WPF7 Raumführung Wohnzimmer"
+    description: >-
+      Shifts the WPM i room setpoint (day + night) so that the living room reaches
+      input_number.wpf7_wohnzimmer_zieltemperatur. Slow PI controller, see
+      packages/wpf7_raumfuehrung.yaml.
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: time_pattern
+        minutes: "/30"
+        id: takt
+      - trigger: state
+        entity_id: input_number.wpf7_wohnzimmer_zieltemperatur
+        for: "00:00:30"
+        id: ziel
+      - trigger: state
+        entity_id: input_boolean.wpf7_raumfuehrung
+        id: schalter
+    variables:
+      basis: 21.0
+      kp: 1.0
+      ki: 0.05
+      i_max: 2.0
+      band: 2.0
+      wz: sensor.living_room_climate_sensor_temperature
+      num_tag: number.stiebel_eltron_wpf_7_raum_solltemperatur_tag
+      num_nacht: number.stiebel_eltron_wpf_7_raum_solltemperatur_nacht
+    actions:
+      - variables:
+          ziel: "{{ states('input_number.wpf7_wohnzimmer_zieltemperatur') | float(none) }}"
+          ist: "{{ states(wz) | float(none) }}"
+          ist_alter_s: >-
+            {% set s = expand(wz) | first | default(none) %}
+            {{ ((now() - s.last_reported).total_seconds()) | round(0) if s is not none else 999999 }}
+          tag_ist: "{{ states(num_tag) | float(none) }}"
+          nacht_ist: "{{ states(num_nacht) | float(none) }}"
+          wpmi_ok: >-
+            {{ tag_ist is number and nacht_ist is number
+               and is_state('sensor.utility_room_stiebel_eltron_wpf_7_can_state', 'Läuft') }}
+          gesperrt: >-
+            {{ not is_state('select.utility_room_stiebel_eltron_wpf_7_sg_ready_zustand', '2 - Normal')
+               or not is_state('select.stiebel_eltron_wpf_7_betriebsmodus_auswahl', 'Automatik') }}
+          messung_ok: >-
+            {{ ziel is number and ist is number and ist >= 10 and ist <= 35 and ist_alter_s | float(999999) < 3600 }}
+      - choose:
+          # 1) room control switched off: give the setpoint back once, reset the I part
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.wpf7_raumfuehrung
+                state: "off"
+            sequence:
+              - if:
+                  - condition: template
+                    value_template: "{{ trigger.id == 'schalter' and wpmi_ok }}"
+                then:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: input_number.wpf7_raumfuehrung_integral
+                    data:
+                      value: 0
+                  - if:
+                      - condition: template
+                        value_template: "{{ (tag_ist - basis) | abs > 0.05 }}"
+                    then:
+                      - action: number.set_value
+                        target:
+                          entity_id: "{{ num_tag }}"
+                        data:
+                          value: "{{ basis }}"
+                  - if:
+                      - condition: template
+                        value_template: "{{ (nacht_ist - basis) | abs > 0.05 }}"
+                    then:
+                      - action: number.set_value
+                        target:
+                          entity_id: "{{ num_nacht }}"
+                        data:
+                          value: "{{ basis }}"
+                  - action: logbook.log
+                    data:
+                      name: "WPF7 Raumführung"
+                      message: "ausgeschaltet: Raum-Soll zurück auf {{ basis }} °C"
+                      entity_id: input_boolean.wpf7_raumfuehrung
+          # 2) WPM i not reachable, SG Ready active or mode not Automatik: do nothing
+          - conditions:
+              - condition: template
+                value_template: "{{ not wpmi_ok or gesperrt }}"
+            sequence:
+              - stop: "WPM i nicht bereit oder SG Ready/Betriebsmodus aktiv"
+          # 3) no valid living room temperature: fall back to the base setpoint
+          - conditions:
+              - condition: template
+                value_template: "{{ not messung_ok }}"
+            sequence:
+              - if:
+                  - condition: template
+                    value_template: "{{ (tag_ist - basis) | abs > 0.05 or (nacht_ist - basis) | abs > 0.05 }}"
+                then:
+                  - action: number.set_value
+                    target:
+                      entity_id: "{{ num_tag }}"
+                    data:
+                      value: "{{ basis }}"
+                  - action: number.set_value
+                    target:
+                      entity_id: "{{ num_nacht }}"
+                    data:
+                      value: "{{ basis }}"
+                  - action: logbook.log
+                    data:
+                      name: "WPF7 Raumführung"
+                      message: >-
+                        Wohnzimmer-Temperatur ungültig oder seit {{ (ist_alter_s | float(0) / 60) | round(0) }} min
+                        ohne Meldung: Raum-Soll zurück auf {{ basis }} °C
+                      entity_id: input_boolean.wpf7_raumfuehrung
+        # 4) controller step
+        default:
+          - variables:
+              e: "{{ (ziel - ist) | round(2) }}"
+              i_alt: "{{ states('input_number.wpf7_raumfuehrung_integral') | float(0) }}"
+              i_neu: >-
+                {% set i = i_alt %}
+                {% if trigger.id == 'takt' %}
+                  {% set cand = i + ki * e %}
+                  {% set u_cand = basis + kp * e + cand %}
+                  {% if (u_cand > basis + band and e > 0) or (u_cand < basis - band and e < 0) %}
+                    {% set cand = i %}
+                  {% endif %}
+                  {% set i = [[cand, i_max] | min, 0 - i_max] | max %}
+                {% endif %}
+                {{ i | round(3) }}
+              soll: >-
+                {% set u = basis + kp * e + i_neu %}
+                {% set u = [[u, basis + band] | min, basis - band] | max %}
+                {{ ((u * 2) | round(0) / 2) | round(1) }}
+          - if:
+              - condition: template
+                value_template: "{{ (i_neu - i_alt) | abs > 0.0005 }}"
+            then:
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.wpf7_raumfuehrung_integral
+                data:
+                  value: "{{ i_neu }}"
+          - if:
+              - condition: template
+                value_template: "{{ (soll - tag_ist) | abs > 0.05 or (soll - nacht_ist) | abs > 0.05 }}"
+            then:
+              - if:
+                  - condition: template
+                    value_template: "{{ (soll - tag_ist) | abs > 0.05 }}"
+                then:
+                  - action: number.set_value
+                    target:
+                      entity_id: "{{ num_tag }}"
+                    data:
+                      value: "{{ soll }}"
+              - if:
+                  - condition: template
+                    value_template: "{{ (soll - nacht_ist) | abs > 0.05 }}"
+                then:
+                  - action: number.set_value
+                    target:
+                      entity_id: "{{ num_nacht }}"
+                    data:
+                      value: "{{ soll }}"
+              - action: logbook.log
+                data:
+                  name: "WPF7 Raumführung"
+                  message: >-
+                    Wohnzimmer {{ ist }} °C, Ziel {{ ziel }} °C: Raum-Soll {{ tag_ist }} -> {{ soll }} °C
+                    (P {{ (kp * e) | round(2) }} K, I {{ i_neu }} K)
+                  entity_id: input_boolean.wpf7_raumfuehrung

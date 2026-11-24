@@ -1,0 +1,422 @@
+{
+  "source": "Wilo-Assistant iOS 6.13.0",
+  "count": 104,
+  "codes": {
+    "401": {
+      "desc_de": "Spannungsversorgung zu instabil. Betrieb kann nicht aufrecht erhalten werden.",
+      "desc_en": "Power supply too unstable. Operation cannot be maintained."
+    },
+    "402": {
+      "desc_de": "Betrieb kann nicht aufrecht erhalten werden. Mögliche Ursachen: 1. Netz überlastet 2. Pumpe ist an falscher Spannungsversorgung angeschlossen 3. Dreiphasennetz ist unsymmetrisch belastet",
+      "desc_en": "Operation cannot be maintained. Possible causes: 1. Mains overloaded 2. Pump is connected to the incorrect power supply 3. Three-phase power supply is unsymmetrically loaded"
+    },
+    "403": {
+      "desc_de": "Betrieb kann nicht aufrecht erhalten werden. Mögliche Ursachen: 1. Netz überlastet 2. Pumpe ist an falscher Spannungsversorgung angeschlossen 3. Dreiphasennetz ist unsymmetrisch belastet",
+      "desc_en": "Operation cannot be maintained. Possible causes: 1. Mains overloaded 2. Pump is connected to the incorrect power supply 3. Three-phase power supply is unsymmetrically loaded"
+    },
+    "404": {
+      "desc_de": "Neben Ablagerungen und Fremdkörpern im System kann auch die Pumpenwelle blockieren.",
+      "desc_en": "In addition to deposits and foreign bodies in the system, the pump shaft can also be blocked."
+    },
+    "405": {
+      "desc_de": "Zulässige Einbaulage und Mindestabstand von Isolations- und Anlagenkomponenten einhalten, damit eine ausreichende Belüftung sichergestellt ist.",
+      "desc_en": "Observe permissible installation position and minimum spacing of insulation and system components to ensure sufficient ventilation."
+    },
+    "406": {
+      "desc_de": "Zulässige Einbaulage und Mindestabstand von Isolations- und Anlagenkomponenten einhalten, damit eine ausreichende Belüftung sichergestellt ist.",
+      "desc_en": "Observe permissible installation position and minimum spacing of insulation and system components to ensure sufficient ventilation."
+    },
+    "407": {
+      "desc_de": "Das Elektronikmodul kann demontiert werden, um die Kontakte zwischen Modul und Motor zu überprüfen. Sicherheitshinweise beachten!",
+      "desc_en": "The electronic module can be dismantled to check the contacts between module and motor. Observe safety instructions!"
+    },
+    "408": {
+      "desc_de": "Wenn die Pumpe zu stark in entgegengesetzter Richtung durchströmt wird, kann der Motor nicht mehr starten.",
+      "desc_en": "If flow passing through pump in the opposite direction is too strong, the motor can no longer start."
+    },
+    "409": {
+      "desc_de": "Ohne erfolgreich abgeschlossenes Softwareupdate kann diese Pumpe nicht mehr arbeiten.",
+      "desc_en": "This pump can no longer function without a successfully completed software update."
+    },
+    "410": {
+      "desc_de": "Dieser Fehler beeinträchtigt auch die Binäreingänge. Ext. AUS ist eingestellt, daher steht die Pumpe.",
+      "desc_en": "This error also impairs binary inputs. Ext. OFF is set, so the pump is stopped."
+    },
+    "411": {
+      "desc_de": "Betrieb kann nicht aufrecht erhalten werden. Mögliche Ursachen: 1. Kontaktfehler an Netzanschlussklemme 2. Sicherung einer Netzphase hat ausgelöst",
+      "desc_en": "Operation cannot be continued. Possible causes: 1. Contact fault on mains connection terminal 2. Mains phase fuse has tripped"
+    },
+    "412": {
+      "desc_de": "Die Pumpe fördert kein oder nur in geringem Umfang Medium.",
+      "desc_en": "The pump does not deliver any fluid or only to a limited extent."
+    },
+    "413": {
+      "desc_de": "Der Saugdruck in der Anlage ist zu hoch. Er muss durch einen Druckbegrenzer begrenzt werden.",
+      "desc_en": "The suction pressure in the system is too high. It must be limited by a pressure limiter."
+    },
+    "414": {
+      "desc_de": "Die Pumpe liefert einen hohen Durchfluss und kann aufgrund eines Lecks in der Anlage den Mindestdruck nicht erreichen.",
+      "desc_en": "The pump supplies a high flow rate and cannot reach the minimum pressure due to a leak in the system."
+    },
+    "415": {
+      "desc_de": "Der niedrige Druck auf der Saugseite wird durch hohen Volumenstrom auf der Druckseite, ein zu kleines Saugrohr, mehrere Krümmer und einen niedrigen Wasserstand im Brunnen verursacht.",
+      "desc_en": "The low pressure on the suction side is caused by high volume flow on the discharge side, a suction pipe that is too small, multiple elbows and a low water level in the well."
+    },
+    "416": {
+      "desc_de": "-",
+      "desc_en": "-"
+    },
+    "417": {
+      "desc_de": "-",
+      "desc_en": "-"
+    },
+    "420": {
+      "desc_de": "Die Pumpe kann nicht feststellen, welches der beiden Bauteile defekt ist. Für weitere Unterstützung wenden Sie sich bitte an den Service.",
+      "desc_en": "The pump cannot identify which of the two components is faulty. Please contact Service for further support."
+    },
+    "421": {
+      "desc_de": "Für weitere Unterstützung wenden Sie sich bitte an den Service.",
+      "desc_en": "Please contact Service for further support."
+    },
+    "550": {
+      "desc_de": "Noch kann die Pumpe voraussichtlich gegen die Durchströmung starten. Wenn die Pumpe zu stark durchströmt wird, kann der Motor ggf. nicht mehr starten.",
+      "desc_en": "The pump can likely still start against flow through. If flow passing through pump is too strong, the motor might possibly no longer start."
+    },
+    "551": {
+      "desc_de": "Die Pumpe läuft, Unterspannung reduziert jedoch unter Umständen die Leistungsfähigkeit der Pumpe. Wenn die Spannung weiter fällt, kann unter Umständen auch der reduzierte Betrieb nicht aufrecht erhalten werden.",
+      "desc_en": "The pump runs, but the undervoltage may reduce the pump’s performance. If the voltage falls further, even the reduced operation may be impossible to maintain."
+    },
+    "552": {
+      "desc_de": "Die Pumpe kann voraussichtlich trotz der Durchströmung starten.",
+      "desc_en": "The pump is still likely to be able to start despite the throughflow."
+    },
+    "553": {
+      "desc_de": "Die Pumpe läuft weiterhin, kann unter Umständen aber nicht mehr die volle Leistung bereit stellen. Für weitere Unterstützung wenden Sie sich bitte an den Service.",
+      "desc_en": "The pump continues running, but under certain conditions is not able to deliver full performance. Please contact Service for further support."
+    },
+    "554": {
+      "desc_de": "In der MFA Übersicht Überprüfung der mit (!) markierten Pumpen. Die Versorgung ist sichergestellt, ein Ersatzwert wird angenommen.",
+      "desc_en": "In the MFA overview, check the pump marked by (!). The supply is ensured, a substitute value is assumed."
+    },
+    "555": {
+      "desc_de": "Fehlerhafte Sensorwerte führen ggf. zu Ersatzbetriebsarten, die die Funktion der Pumpe ohne den benötigten Sensorwert sicherstellen.",
+      "desc_en": "Faulty sensor values may lead to types of substitute operation mode, which ensure the pump functions without the required sensor value."
+    },
+    "556": {
+      "desc_de": "Kabelbrucherkennung führt ggf. zu Ersatzbetriebsarten, die den Betrieb ohne den benötigten externen Wert sicherstellen.",
+      "desc_en": "Identification of cable break may lead to types of substitute operation mode, which ensure operation without the required external value."
+    },
+    "557": {
+      "desc_de": "Fehlerhafte Sensorwerte führen ggf. zu Ersatzbetriebsarten, die die Funktion der Pumpe ohne den benötigten Sensorwert sicherstellen.",
+      "desc_en": "Faulty sensor values may lead to types of substitute operation mode, which ensure the pump functions without the required sensor value."
+    },
+    "558": {
+      "desc_de": "Kabelbrucherkennung führt ggf. zu Ersatzbetriebsarten, die den Betrieb ohne den benötigten externen Wert sicherstellen.",
+      "desc_en": "Identification of cable break may lead to types of substitute operation mode, which ensure operation without the required external value."
+    },
+    "560": {
+      "desc_de": "Softwareupdate wurde nicht durchgeführt, Pumpe arbeitet mit vorheriger Softwareversion weiter.",
+      "desc_en": "Software update was not carried out; pump continues to operate with previous software version."
+    },
+    "561": {
+      "desc_de": "Dieses Problem beeinträchtigt auch die Binäreingänge. Funktionen der Binäreingänge stehen nicht zur Verfügung.",
+      "desc_en": "This problem also impairs binary inputs. The functions of binary inputs are not available."
+    },
+    "562": {
+      "desc_de": "Dieses Problem beeinträchtigt die Funktionen der Analogeingänge.",
+      "desc_en": "This problem impairs the functions of the analogue inputs."
+    },
+    "563": {
+      "desc_de": "Dieses Problem beeinträchtigt die Funktionen der Regelung. Eine Ersatzfunktion ist aktiv.",
+      "desc_en": "This problem impairs the control functions. A substitute function is active."
+    },
+    "564": {
+      "desc_de": "Dieses Problem beeinträchtigt die Funktionen der Regelung. Eine Ersatzfunktion ist aktiv.",
+      "desc_en": "This problem impairs the control functions. A substitute function is active."
+    },
+    "565": {
+      "desc_de": "Das Signal wird mit maximalem Wert verarbeitet.",
+      "desc_en": "The signal is processed with the maximum value."
+    },
+    "566": {
+      "desc_de": "Das Signal wird mit maximalem Wert verarbeitet.",
+      "desc_en": "The signal is processed with the maximum value."
+    },
+    "567": {
+      "desc_de": "Die Pumpenfunktion ist geringfügig beeinträchtigt. Die Pumpe kann den Volumenstrom nicht mehr genau ermitteln.",
+      "desc_en": "The pump function is slightly impaired. The pump can no longer accurately determine the volume flow."
+    },
+    "568": {
+      "desc_de": "Die Pumpenfunktion ist geringfügig beeinträchtigt. Die Pumpe kann den Volumenstrom nicht mehr genau ermitteln. Während der Erstinbetriebnahme kann die in der Pumpe verbliebene Luft eine typische Ursache sein. - Entlüften!",
+      "desc_en": "The pump function is slightly impaired. The pump can no longer accurately determine the volume flow. During initial commissioning, the air remaining in the pump may be a typical cause - vent!"
+    },
+    "569": {
+      "desc_de": "Pumpe arbeitet in einem Ersatzbetrieb.",
+      "desc_en": "Pump operates in a substitute operation mode."
+    },
+    "570": {
+      "desc_de": "Die Leistung der Pumpe ist reduziert. Das Elektronikmodul muss bei deutlicher Überhitzung den Betrieb der Pumpe einstellen, um Schäden an Elektronikkomponenten zu vermeiden.",
+      "desc_en": "The pump’s performance is reduced. The electronic module must adjust the pump’s operation in the event of noticeable overheating to prevent damage to electronic components."
+    },
+    "571": {
+      "desc_de": "Die grundlegende Pumpenfunktion ist wenig beeinträchtigt. Dieser Kopf erfüllt die Pumpenfunktion bis zur Leistungsgrenze.",
+      "desc_en": "Basic pump function is not significantly impaired. The head meets the pump function up to the performance limit."
+    },
+    "572": {
+      "desc_de": "Die Pumpe fördert kein oder nur in geringem Umfang Medium.",
+      "desc_en": "The pump does not deliver any fluid or only to a limited extent."
+    },
+    "573": {
+      "desc_de": "Diese Kontakte können gefahrlos überprüft und gereinigt werden.",
+      "desc_en": "These contacts can be safely checked and cleaned."
+    },
+    "574": {
+      "desc_de": "Das CIF-Modul ist im Klemmraum über 4 Kontakte mit der Pumpe verbunden. Diese Kontakte können gefahrlos überprüft und gereinigt werden.",
+      "desc_en": "The CIF module is connected in the terminal compartment to the pump via 4 contacts. These contacts can be safely checked and cleaned."
+    },
+    "575": {
+      "desc_de": "Die grundlegende Pumpenfunktion ist nicht beeinträchtigt. Wenn ein Softwareupdate nicht hilft, wenden Sie sich bitte an den Service.",
+      "desc_en": "The basic pump function is not impaired. If a software update does not help, please contact Service."
+    },
+    "576": {
+      "desc_de": "Die Pumpenfunktion ist geringfügig beeinträchtigt. Die Pumpe kann die interne Medientemperatur nicht mehr ermitteln.",
+      "desc_en": "The pump function is slightly impaired. The pump can no longer determine the internal fluid temperature."
+    },
+    "577": {
+      "desc_de": "Softwareupdate wurde nicht durchgeführt, Pumpe arbeitet mit vorheriger Softwareversion weiter.",
+      "desc_en": "Software update was not carried out; pump continues to operate with previous software version."
+    },
+    "578": {
+      "desc_de": "Die Display- und Bedieneinheit ist als Ersatzteil verfügbar.",
+      "desc_en": "The display and operating unit is available as a spare part."
+    },
+    "579": {
+      "desc_de": "Die grundlegende Pumpenfunktion ist nicht beeinträchtigt. Wenn ein Softwareupdate nicht hilft, wenden Sie sich bitte an den Service.",
+      "desc_en": "The basic pump function is not impaired. If a software update does not help, please contact Service."
+    },
+    "580": {
+      "desc_de": "Es wurde mehr als 5 Mal eine falsche PIN verwendet.",
+      "desc_en": "An incorrect PIN has been entered more than 5 times."
+    },
+    "581": {
+      "desc_de": "Die Pumpe arbeitet in einer Ersatzbetriebsart, die den Pumpenbetrieb aufrecht erhält.",
+      "desc_en": "The pump works in a substitute operation mode that maintains pump operation."
+    },
+    "582": {
+      "desc_de": "Doppelpumpenfunktion steht nur bei der Verwendung zweier kompatibler, typengleicher Pumpen zur Verfügung",
+      "desc_en": "Dual-pump function is only available when using two compatible pumps of the same type"
+    },
+    "583": {
+      "desc_de": "Die Pumpe ist für diese hohe Medientemperatur nicht geeignet. Zu hohe Medientemperatur führt zu erheblichen Schäden an der Pumpe.",
+      "desc_en": "The pump is unsuitable for this high fluid temperature. Too high fluid temperature causes considerable damage to the pump."
+    },
+    "586": {
+      "desc_de": "Die Pumpe läuft weiterhin. Wenn die Spannung weiter steigt, wird die Pumpe unter Umständen abgeschaltet. Zu hohe Spannungen können die Pumpe beschädigen.",
+      "desc_en": "The pump continues to run. If the voltage continues to increase, the pump may be shut down. Excessive voltages can damage the pump."
+    },
+    "587": {
+      "desc_de": "Noch zeigt die Pumpe die Zeitangaben z.B. in Wärmemengenmessung und Statistikdaten korrekt an. Wenn die Batteriespannung weiter sinkt, kann die Zeiterfassung ggf. nicht aufrecht erhalten werden. Die grundlegende Pumpenfunktion ist nicht beeinträchtigt.",
+      "desc_en": "The pump still displays the time data correctly e.g. in heat quantity measurement and statistical data. If the battery power drops further, it may not be possible to maintain time recording. The fundamental pumping function is not impaired."
+    },
+    "588": {
+      "desc_de": "Die Pumpe läuft weiterhin, kann unter Umständen aber nicht mehr die volle Leistung bereitstellen.",
+      "desc_en": "The pump continues to run but may no longer be able to provide full power."
+    },
+    "589": {
+      "desc_de": "Die Zeiterfassung der Pumpe ist ggf. fehlerhaft. Die Zeitangaben z.B. in Wärme-/Kältemengenmessung, Wiederherstellpunkten und Statistikdaten sind ggf. nicht korrekt. Die grundlegende Pumpenfunktion ist nicht beeinträchtigt.",
+      "desc_en": "The pump’s time recording might be faulty. The time data e.g. in heat/cooling quantity measurement, restore points and statistical data may not be correct. The fundamental pumping function is not impaired."
+    },
+    "590": {
+      "desc_de": "Für den Multi-Flow Adaptation Partner wird ein maximaler Ersatzvolumenstrom bereitgestellt. Überprüfung der mit (!) markierten Partner in der MFA Übersicht im Kontext- Menü.",
+      "desc_en": "For the Multi-Flow Adaptation partner, a maximum replacement flow is provided. Check of the partners marked with (!) in the MFA Overview in the context menu."
+    },
+    "591": {
+      "desc_de": "Fehlerhafte Sensorwerte führen ggf. zu Ersatzbetriebsarten, die die Funktion der Pumpe ohne den benötigten Sensorwert sicherstellen.",
+      "desc_en": "Faulty sensor values may lead to types of substitute operation mode, which ensure the pump functions without the required sensor value."
+    },
+    "592": {
+      "desc_de": "Kabelbrucherkennung führt ggf. zu Ersatzbetriebsarten, die den Betrieb ohne den benötigten externen Wert sicherstellen.",
+      "desc_en": "Identification of cable break may lead to types of substitute operation mode, which ensure operation without the required external value."
+    },
+    "593": {
+      "desc_de": "Das Signal wird mit maximalem Wert verarbeitet.",
+      "desc_en": "The signal is processed with the maximum value."
+    },
+    "594": {
+      "desc_de": "Fehlerhafte Sensorwerte führen ggf. zu Ersatzbetriebsarten, die die Funktion der Pumpe ohne den benötigten Sensorwert sicherstellen.",
+      "desc_en": "Faulty sensor values may lead to types of substitute operation mode, which ensure the pump functions without the required sensor value."
+    },
+    "595": {
+      "desc_de": "Kabelbrucherkennung führt ggf. zu Ersatzbetriebsarten, die den Betrieb ohne den benötigten externen Wert sicherstellen.",
+      "desc_en": "Identification of cable break may lead to types of substitute operation mode, which ensure operation without the required external value."
+    },
+    "596": {
+      "desc_de": "Das Signal wird mit maximalem Wert verarbeitet.",
+      "desc_en": "The signal is processed with the maximum value."
+    },
+    "597": {
+      "desc_de": "Die Fördermedienkorrektur wird nicht angewendet oder liefert einen ungenauen Volumenstrom.",
+      "desc_en": "The fluid correction is not applied or provides an inaccurate volume flow."
+    },
+    "598": {
+      "desc_de": "Um einen weiteren Überlauf zu vermeiden, wird das Spülventil erst wieder geöffnet, wenn die Warnung nicht mehr anliegt. Ein regelmäßiger Wasseraustausch kann in diesem Fall nicht mehr sichergestellt werden.",
+      "desc_en": "To prevent further overflow, the flush valve will not be opened again until the warning is no longer present. In this case, regular water exchange can no longer be ensured."
+    },
+    "601": {
+      "desc_de": "Die Sollwertquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sollwertquelle.",
+      "desc_en": "The setpoint source is not correctly configured. In the context menu of the HMI there is a link for configuring the setpoint source."
+    },
+    "602": {
+      "desc_de": "Die Sollwertquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The setpoint source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "603": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "604": {
+      "desc_de": "Die Sensorquellen sind nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquellen.",
+      "desc_en": "The sensor sources are not correctly configured. In the context menu of the HMI there is a link for configuring the sensor sources."
+    },
+    "605": {
+      "desc_de": "Die Übertragungsfunktion des Analogeingangs ist so konfiguriert, dass nur sehr eingeschränkte Sensorwerte zur Verfügung stehen. Diese passen nicht zur Regelfunktion.",
+      "desc_en": "The transfer function of the analogue input is configured such that only very limited sensor values are available. These are not suitable for the control function."
+    },
+    "606": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "607": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "608": {
+      "desc_de": "Die Übertragungsfunktion des Analogeingangs ist so konfiguriert, dass nur sehr eingeschränkte Sensorwerte zur Verfügung stehen. Diese passen nicht zur Regelfunktion.",
+      "desc_en": "The transfer function of the analogue input is configured such that only very limited sensor values are available. These are not suitable for the control function."
+    },
+    "609": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "610": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "611": {
+      "desc_de": "Die Sensorquellen sind nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquellen.",
+      "desc_en": "The sensor sources are not correctly configured. In the context menu of the HMI there is a link for configuring the sensor sources."
+    },
+    "612": {
+      "desc_de": "Die Übertragungsfunktion des Analogeingangs ist so konfiguriert, dass nur sehr eingeschränkte Sensorwerte zur Verfügung stehen. Diese passen nicht zum Wärmemengenzähler.",
+      "desc_en": "The transfer function of the analogue input is configured such that only very limited sensor values are available. These are not suitable for the heat meter."
+    },
+    "613": {
+      "desc_de": "Der Eingang  ist so konfiguriert, dass wahrscheinlich falsche Sensorwerte zur Verfügung stehen. Diese passen nicht zum Wärmemengenzähler.",
+      "desc_en": "The input  is configured such that likely incorrect sensor values are provided. These are not suitable for the heat meter."
+    },
+    "614": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "615": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "616": {
+      "desc_de": "Die Übertragungsfunktion des Analogeingangs ist so konfiguriert, dass nur sehr eingeschränkte Sensorwerte zur Verfügung stehen. Diese passen nicht zum Wärmemengenzähler.",
+      "desc_en": "The transfer function of the analogue input is configured such that only very limited sensor values are available. These are not suitable for the heat meter."
+    },
+    "617": {
+      "desc_de": "Der Eingang  ist so konfiguriert, dass wahrscheinlich falsche Sensorwerte zur Verfügung stehen. Diese passen nicht zum Wärmemengenzähler.",
+      "desc_en": "The input  is configured such that likely incorrect sensor values are provided. These are not suitable for the heat meter."
+    },
+    "618": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "619": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "620": {
+      "desc_de": "Die Übertragungsfunktion des Analogeingangs ist so konfiguriert, dass nur sehr eingeschränkte Sensorwerte zur Verfügung stehen. Diese passen nicht zur automatischen Umschaltung zwischen Heizen und Kühlen.",
+      "desc_en": "The transfer function of the analogue input is configured such that only very limited sensor values are available. These are not suitable for automatic switchover between heating and cooling."
+    },
+    "621": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "641": {
+      "desc_de": "Die Sollwertquelle für die Kühlfunktion ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sollwertquelle.",
+      "desc_en": "The setpoint source for the cooling function is not correctly configured. In the context menu of the HMI there is a link for configuring the setpoint source."
+    },
+    "642": {
+      "desc_de": "Die Sollwertquelle für die Kühlfunktion oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The setpoint source for the cooling function or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "643": {
+      "desc_de": "Die Sensorquelle für die Kühlfunktion ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source for the cooling function is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "644": {
+      "desc_de": "Die Sensorquellen für die Kühlfunktion sind nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquellen.",
+      "desc_en": "The sensor sources for the cooling function are not correctly configured. In the context menu of the HMI there is a link for configuring the sensor sources."
+    },
+    "646": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "647": {
+      "desc_de": "Die Sensorquelle für die Kühlfunktion ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source for the cooling function is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "649": {
+      "desc_de": "Die Sensorquelle oder das CIF-Modul ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es Links zur Konfiguration.",
+      "desc_en": "The sensor source or the CIF module is not correctly configured. In the context menu of the HMI there are links for configuration."
+    },
+    "650": {
+      "desc_de": "MFA sammelt den Bedarf der konfigurierten Partnerpumpen, um diese in Summe zu versorgen. Dazu müssen die Partnerpumpen in der MFA Konfiguration ausgewählt werden.",
+      "desc_en": "MFA collects the demand of the configured partner pumps to supply them in total. For this, the partner pumps must be selected in the MFA configuration."
+    },
+    "651": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "655": {
+      "desc_de": "Die Sensorquelle ist nicht richtig konfiguriert. Im Kontextmenü des HMI gibt es den Link zur Konfiguration der Sensorquelle.",
+      "desc_en": "The sensor source is not correctly configured. In the context menu of the HMI there is a link for configuring the sensor source."
+    },
+    "656": {
+      "desc_de": "Die Pumpenfunktion ist geringfügig beeinträchtigt. Die Pumpe kann die Nachtabsenkung des Wärmeerzeugers nicht mehr erkennen.",
+      "desc_en": "The pump function is slightly impaired. The pump can no longer detect the night setback of the heat generator."
+    },
+    "657": {
+      "desc_de": "Die Pumpe arbeitet in einer Ersatzbetriebsart, die den Pumpenbetrieb aufrecht erhält.",
+      "desc_en": "The pump works in a substitute operation mode that maintains pump operation."
+    },
+    "659": {
+      "desc_de": "Der Fehler könnte z.B. durch ein nicht korrekt schließendes Spülventil verursacht worden sein.",
+      "desc_en": "The error could be caused by an incorrectly closing flush valve, for example."
+    },
+    "660": {
+      "desc_de": "-",
+      "desc_en": "-"
+    },
+    "661": {
+      "desc_de": "-",
+      "desc_en": "-"
+    },
+    "662": {
+      "desc_de": "-",
+      "desc_en": "-"
+    },
+    "888": {
+      "desc_de": "Bitte wenden Sie sich an Wilo",
+      "desc_en": "Please contact Wilo"
+    },
+    "999": {
+      "desc_de": "-",
+      "desc_en": "-"
+    }
+  }
+}

@@ -1,0 +1,196 @@
+substitutions:
+  device_name: wilo-stratos-pico
+  friendly_name: Wilo Stratos PICO
+  pump_mac: "AA:BB:CC:DD:EE:FF"
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+
+external_components:
+  - source:
+      type: local
+      path: ../../components
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+logger:
+  level: INFO
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+captive_portal:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret ap_password
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+
+ble_client:
+  - mac_address: ${pump_mac}
+    id: wilo_ble_client
+    auto_connect: true
+
+switch:
+  - platform: ble_client
+    ble_client_id: wilo_ble_client
+    name: "BLE Connection"
+    entity_category: config
+    restore_mode: RESTORE_DEFAULT_ON
+
+wilo_bt:
+  id: wilo_pump
+  ble_client_id: wilo_ble_client
+  update_interval: 5s
+  config_poll_interval: 60s
+  debug_protocol: false
+
+  # Session authentication controls
+  session_pin:
+    name: "Session PIN"
+    mode: box
+
+  authenticate:
+    name: "Authenticate"
+
+  request_pin:
+    name: "Request New PIN"
+
+  # Pump controls (verified from Wilo-Assistant 6.13.0)
+  pump_run:
+    name: "Pump Run"
+
+  setpoint_control:
+    name: "Setpoint Control"
+    mode: box
+
+  setpoint_percent_control:
+    name: "Setpoint Percent Control"
+    mode: slider
+
+  control_mode_select:
+    name: "Control Mode Select"
+
+  night_setback:
+    name: "Night Setback"
+
+  pressure_independent_valve:
+    name: "Pressure Independent Valve"
+
+  air_venting:
+    name: "Air Venting"
+
+  manual_restart:
+    name: "Manual Restart"
+
+  reset_energy:
+    name: "Reset Energy Meter"
+
+  # Connection & fault status
+  connected:
+    name: "Connected"
+
+  authenticated:
+    name: "Authenticated"
+
+  waiting_for_pin:
+    name: "Waiting For PIN"
+
+  active_fault:
+    name: "Active Fault"
+
+  active_warning:
+    name: "Active Warning"
+
+  active_alarms:
+    name: "Active Alarms"
+
+  air_venting_active:
+    name: "Air Venting Active"
+
+  air_venting_remaining:
+    name: "Air Venting Remaining"
+
+  protocol_state:
+    name: "Protocol State"
+
+  # Live pump telemetry
+  flow_rate:
+    name: "Flow Rate"
+
+  differential_pressure:
+    name: "Differential Pressure"
+
+  medium_temperature:
+    name: "Medium Temperature"
+
+  power:
+    name: "Power"
+
+  energy:
+    name: "Energy"
+
+  speed:
+    name: "Speed"
+
+  operating_hours:
+    name: "Operating Hours"
+
+  setpoint:
+    name: "Setpoint"
+
+  setpoint_percent:
+    name: "Setpoint Percent"
+
+  control_mode:
+    name: "Control Mode"
+
+  # Pump metadata & diagnostics
+  device_name:
+    name: "Device Name"
+
+  pump_type:
+    name: "Pump Type"
+
+  serial_number:
+    name: "Serial Number"
+
+  software_version:
+    name: "Software Version"
+
+  max_head:
+    name: "Max Head"
+
+  max_flow:
+    name: "Max Flow"
+
+  pump_status_code:
+    name: "Pump Status Code"
+
+  control_mode_code:
+    name: "Control Mode Code"
+
+  # Optional raw CBOR/JSON snapshots (useful for discovering new keys)
+  raw_static_json:
+    name: "Raw Static JSON"
+
+  raw_live_json:
+    name: "Raw Live JSON"

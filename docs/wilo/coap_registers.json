@@ -1,0 +1,2622 @@
+{
+  "source": "Wilo-Assistant iOS 6.13.0",
+  "unique_coap_ids": 206,
+  "registers": [
+    {
+      "coap_id": "0x0001",
+      "coap_int": 1,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "heating_and_cooling_cubit",
+        "pid_controller",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_settings_cubit",
+        "sensor_slot_stepper",
+        "setpoint_delivery_head_dpc",
+        "setpoint_delivery_head_dpv",
+        "setpoint_delivery_head_pset",
+        "setpoint_feeder_pump_correction_factor",
+        "setpoint_pid",
+        "setpoint_slider",
+        "setpoint_speed",
+        "setpoint_temperature_dtc",
+        "setpoint_temperature_tc",
+        "setpoint_volume_flow_qc",
+        "settings_manual",
+        "substitute_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x0002",
+      "coap_int": 2,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::controlFunctionSourceIDSensor1",
+        "PV.Sensor1Value"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper_type",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_setting_parameters",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x0003",
+      "coap_int": 3,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::controlFunctionSourceIDSensor2",
+        "PV.Sensor2Value"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper_type",
+        "pump_details_cubit",
+        "pump_setting_parameters",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x0079",
+      "coap_int": 121,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionSetPoint"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pid_controller",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_setting_parameters",
+        "second_parameter_setpoint",
+        "setpoint_delivery_head_dpc",
+        "setpoint_delivery_head_dpv",
+        "setpoint_delivery_head_pset",
+        "setpoint_feeder_pump_correction_factor",
+        "setpoint_pid",
+        "setpoint_slider",
+        "setpoint_speed",
+        "setpoint_stage_selector",
+        "setpoint_temperature_dtc",
+        "setpoint_temperature_tc",
+        "setpoint_volume_flow_qc"
+      ]
+    },
+    {
+      "coap_id": "0x007A",
+      "coap_int": 122,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::setPointSourceID"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "lack_of_water_detection",
+        "pid_controller",
+        "pump_setting_parameters",
+        "setpoint_external_source",
+        "setpoint_slider"
+      ]
+    },
+    {
+      "coap_id": "0x007B",
+      "coap_int": 123,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::substituteSetpoint"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_setting_parameters",
+        "pump_settings_cubit",
+        "substitute_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x0105",
+      "coap_int": 261,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::controlFunctionMFAOffset"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "mfa_volume_flow_offset",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x010F",
+      "coap_int": 271,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionMixerSupported"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "mfa_mixer_supported",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0111",
+      "coap_int": 273,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionKd"
+      ],
+      "app_modules": [
+        "control_parameter_kd",
+        "documents_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0112",
+      "coap_int": 274,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionInvertControlDeviation"
+      ],
+      "app_modules": [
+        "controller_inversion",
+        "documents_cubit",
+        "pump_setting_parameters",
+        "setback_operation"
+      ]
+    },
+    {
+      "coap_id": "0x0113",
+      "coap_int": 275,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "control_parameter_ti",
+        "documents_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0114",
+      "coap_int": 276,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "control_parameter_td",
+        "documents_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0141",
+      "coap_int": 321,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionKi"
+      ],
+      "app_modules": [
+        "control_parameter_ki",
+        "documents_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0142",
+      "coap_int": 322,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionKp"
+      ],
+      "app_modules": [
+        "control_parameter_kp",
+        "documents_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x017D",
+      "coap_int": 381,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::volumeFlowNom"
+      ],
+      "app_modules": [
+        "design_volume_flow",
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_setting_parameters",
+        "q_nominal_duty_point"
+      ]
+    },
+    {
+      "coap_id": "0x017E",
+      "coap_int": 382,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::gradientPumpCurve"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "gradient_delta_pv_pump_curve",
+        "pump_setting_parameters",
+        "zero_flow_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x017F",
+      "coap_int": 383,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::volumeFlowNomEnabled"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "q_nominal_duty_point"
+      ]
+    },
+    {
+      "coap_id": "0x0191",
+      "coap_int": 401,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pressure_independent_valve",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x01E3",
+      "coap_int": 483,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::temperatureDampingOne"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "temperature_damping"
+      ]
+    },
+    {
+      "coap_id": "0x01E4",
+      "coap_int": 484,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::temperatureDampingTwo"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "temperature_damping"
+      ]
+    },
+    {
+      "coap_id": "0x0259",
+      "coap_int": 601,
+      "writable": false,
+      "cfp_names": [
+        "CF.NightSetbackStatus"
+      ],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x025A",
+      "coap_int": 602,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionNightSetback"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "night_setback_operation",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_setting_parameters",
+        "setback_operation"
+      ]
+    },
+    {
+      "coap_id": "0x027A",
+      "coap_int": 634,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionZeroFlowLimitEnabled"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "no_flow_stop",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x027B",
+      "coap_int": 635,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionZeroFlowLimit"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "no_flow_stop",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x027C",
+      "coap_int": 636,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "zero_flow"
+      ]
+    },
+    {
+      "coap_id": "0x027D",
+      "coap_int": 637,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "zero_flow"
+      ]
+    },
+    {
+      "coap_id": "0x027F",
+      "coap_int": 639,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "zero_flow"
+      ]
+    },
+    {
+      "coap_id": "0x0280",
+      "coap_int": 640,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "zero_flow"
+      ]
+    },
+    {
+      "coap_id": "0x0283",
+      "coap_int": 643,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "zero_flow"
+      ]
+    },
+    {
+      "coap_id": "0x029A",
+      "coap_int": 666,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionMinFlowLimit"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "minimum_volume_flow",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x029B",
+      "coap_int": 667,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionMinFlowLimitEnabled"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "minimum_volume_flow",
+        "no_flow_stop",
+        "pump_config_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x02BA",
+      "coap_int": 698,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionMaxFlowLimit"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "maximum_volume_flow",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x02BB",
+      "coap_int": 699,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionMaxFlowLimitEnabled"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "maximum_volume_flow",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x02D9",
+      "coap_int": 729,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x02DC",
+      "coap_int": 732,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::thermalDisinfectionEnabled"
+      ],
+      "app_modules": [
+        "detection_of_disinfection",
+        "documents_cubit",
+        "pump_setting_parameters",
+        "thermal_disinfection"
+      ]
+    },
+    {
+      "coap_id": "0x02F9",
+      "coap_int": 761,
+      "writable": false,
+      "cfp_names": [
+        "DevP.SpdMin"
+      ],
+      "app_modules": [
+        "emergency_operation_speed",
+        "pump_kick"
+      ]
+    },
+    {
+      "coap_id": "0x02FA",
+      "coap_int": 762,
+      "writable": false,
+      "cfp_names": [
+        "DevP.SpdMax"
+      ],
+      "app_modules": [
+        "emergency_operation_speed",
+        "pump_kick"
+      ]
+    },
+    {
+      "coap_id": "0x02FB",
+      "coap_int": 763,
+      "writable": true,
+      "cfp_names": [
+        "SpeedGradientLimit.TiRampUp"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "pump_ramp"
+      ]
+    },
+    {
+      "coap_id": "0x02FC",
+      "coap_int": 764,
+      "writable": true,
+      "cfp_names": [
+        "SpeedGradientLimit.TiRampDown"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "pump_ramp"
+      ]
+    },
+    {
+      "coap_id": "0x0335",
+      "coap_int": 821,
+      "writable": true,
+      "cfp_names": [
+        "CF.ControlSetSwitch",
+        "CF.SwitchingMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_config_cubit",
+        "pump_settings_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0336",
+      "coap_int": 822,
+      "writable": false,
+      "cfp_names": [
+        "CF.ControlSetSelectionParam.SourceIDSens1"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper_type",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x0337",
+      "coap_int": 823,
+      "writable": true,
+      "cfp_names": [
+        "CF.ControlSetSelectionParam.TCoolgThd"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_switchover_temperature",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0338",
+      "coap_int": 824,
+      "writable": true,
+      "cfp_names": [
+        "CF.ControlSetSelectionParam.THeatgThd"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_switchover_temperature",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0339",
+      "coap_int": 825,
+      "writable": false,
+      "cfp_names": [
+        "PumpState.ActiveInfluences.HeatingCooling"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_settings_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0385",
+      "coap_int": 901,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::controlFunctionFallbackSpeed"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "emergency_operation_speed",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x039A",
+      "coap_int": 922,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_input_selection_view",
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x039B",
+      "coap_int": 923,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x039C",
+      "coap_int": 924,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x039F",
+      "coap_int": 927,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_input_selection_view",
+        "documents_cubit",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x03A0",
+      "coap_int": 928,
+      "writable": false,
+      "cfp_names": [
+        "HeatMetering.Sensor1SourceId"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper_type",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03A1",
+      "coap_int": 929,
+      "writable": false,
+      "cfp_names": [
+        "HeatMetering.Sensor2SourceId"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper_type",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03A2",
+      "coap_int": 930,
+      "writable": false,
+      "cfp_names": [
+        "PV.MediumTemp"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x03A3",
+      "coap_int": 931,
+      "writable": false,
+      "cfp_names": [
+        "PV.ForwardMediumTemp"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_document_request",
+        "target_values_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x03A4",
+      "coap_int": 932,
+      "writable": false,
+      "cfp_names": [
+        "PV.ReturnMediumTemp"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_document_request",
+        "target_values_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x03A6",
+      "coap_int": 934,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_input_selection_view",
+        "documents_cubit",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x03A7",
+      "coap_int": 935,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_input_selection_view",
+        "documents_cubit",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x03A8",
+      "coap_int": 936,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_input_selection_view",
+        "documents_cubit",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x03C1",
+      "coap_int": 961,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::analogInputConfigSignalType"
+      ],
+      "app_modules": [
+        "analog_input_selection_view",
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C2",
+      "coap_int": 962,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigUsageType"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C3",
+      "coap_int": 963,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigCableBreakLimit"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C4",
+      "coap_int": 964,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::tOffset"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "temperature_correction"
+      ]
+    },
+    {
+      "coap_id": "0x03C5",
+      "coap_int": 965,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigX1"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C6",
+      "coap_int": 966,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigY1"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C7",
+      "coap_int": 967,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigX2"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C8",
+      "coap_int": 968,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigY2"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03C9",
+      "coap_int": 969,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigHystOn"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03CA",
+      "coap_int": 970,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigHystOff"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03DF",
+      "coap_int": 991,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigCableBreakEnabled"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x03E0",
+      "coap_int": 992,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::analogInputConfigHystEnable"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x0411",
+      "coap_int": 1041,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::binaryInputMode",
+        "AllCFP::binaryInputNo"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04EE",
+      "coap_int": 1262,
+      "writable": true,
+      "cfp_names": [
+        "SSM.Mode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04EF",
+      "coap_int": 1263,
+      "writable": true,
+      "cfp_names": [
+        "SSM.OutputMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F0",
+      "coap_int": 1264,
+      "writable": true,
+      "cfp_names": [
+        "SSM.DelayTime1"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F1",
+      "coap_int": 1265,
+      "writable": true,
+      "cfp_names": [
+        "SSM.DelayTime2"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F2",
+      "coap_int": 1266,
+      "writable": true,
+      "cfp_names": [
+        "SBM.Mode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F3",
+      "coap_int": 1267,
+      "writable": true,
+      "cfp_names": [
+        "SBM.OutputMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F4",
+      "coap_int": 1268,
+      "writable": true,
+      "cfp_names": [
+        "SBM.DelayTime1"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x04F5",
+      "coap_int": 1269,
+      "writable": true,
+      "cfp_names": [
+        "SBM.DelayTime2"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0515",
+      "coap_int": 1301,
+      "writable": true,
+      "cfp_names": [
+        "WiloLAN.Termination"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0517",
+      "coap_int": 1303,
+      "writable": true,
+      "cfp_names": [
+        "WiloLAN.NodeId"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x053D",
+      "coap_int": 1341,
+      "writable": true,
+      "cfp_names": [
+        "IFM.ActivationStatus.Type"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "pump_setting_parameters",
+        "sensor_slot_stepper",
+        "setpoint_external_source"
+      ]
+    },
+    {
+      "coap_id": "0x055B",
+      "coap_int": 1371,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::ifmParamAddress",
+        "AllCFP::ifmParamInstanceNo",
+        "IFM.ConnectionStatus.Type"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x055C",
+      "coap_int": 1372,
+      "writable": false,
+      "cfp_names": [
+        "IFM.ConfiguredModule.Type"
+      ],
+      "app_modules": [
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x055D",
+      "coap_int": 1373,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x05C9",
+      "coap_int": 1481,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "manual_restart_button"
+      ]
+    },
+    {
+      "coap_id": "0x05D3",
+      "coap_int": 1491,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "manual_restart_button"
+      ]
+    },
+    {
+      "coap_id": "0x05DD",
+      "coap_int": 1501,
+      "writable": true,
+      "cfp_names": [
+        "PumpKick.ExecSpeed"
+      ],
+      "app_modules": [
+        "pump_config_cubit",
+        "pump_kick"
+      ]
+    },
+    {
+      "coap_id": "0x05DE",
+      "coap_int": 1502,
+      "writable": true,
+      "cfp_names": [
+        "PumpKick.Period"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "pump_kick"
+      ]
+    },
+    {
+      "coap_id": "0x05E7",
+      "coap_int": 1511,
+      "writable": true,
+      "cfp_names": [
+        "PumpKick.Mode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "pump_kick"
+      ]
+    },
+    {
+      "coap_id": "0x0605",
+      "coap_int": 1541,
+      "writable": false,
+      "cfp_names": [
+        "AV.Start",
+        "AV.Stop"
+      ],
+      "app_modules": [
+        "pump_venting_button"
+      ]
+    },
+    {
+      "coap_id": "0x060A",
+      "coap_int": 1546,
+      "writable": false,
+      "cfp_names": [
+        "AV.Status.RemainingTime"
+      ],
+      "app_modules": [
+        "manual_restart_button",
+        "pump_details_cubit",
+        "pump_venting_button"
+      ]
+    },
+    {
+      "coap_id": "0x060F",
+      "coap_int": 1551,
+      "writable": false,
+      "cfp_names": [
+        "AV.Status.Status"
+      ],
+      "app_modules": [
+        "manual_restart_button",
+        "pump_details_cubit",
+        "pump_venting_button"
+      ]
+    },
+    {
+      "coap_id": "0x0619",
+      "coap_int": 1561,
+      "writable": true,
+      "cfp_names": [
+        "HeatMetering.HeatMeterEnabled"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "enable_heat_metering",
+        "heat_quantity_monitoring",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x062D",
+      "coap_int": 1581,
+      "writable": false,
+      "cfp_names": [
+        "PV.HeatQuantityTotal"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heat_quantity_monitoring",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x062E",
+      "coap_int": 1582,
+      "writable": false,
+      "cfp_names": [
+        "PV.HeatQuantity"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "heat_quantity_monitoring",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x062F",
+      "coap_int": 1583,
+      "writable": false,
+      "cfp_names": [
+        "PV.HeatPower"
+      ],
+      "app_modules": [
+        "heat_quantity_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x0630",
+      "coap_int": 1584,
+      "writable": false,
+      "cfp_names": [
+        "PV.ColdQuantityTotal"
+      ],
+      "app_modules": [
+        "cold_quantity_monitoring",
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0631",
+      "coap_int": 1585,
+      "writable": false,
+      "cfp_names": [
+        "PV.ColdQuantity"
+      ],
+      "app_modules": [
+        "cold_quantity_monitoring",
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0632",
+      "coap_int": 1586,
+      "writable": false,
+      "cfp_names": [
+        "HeatMetering.HeatQuantityStartTime"
+      ],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x0633",
+      "coap_int": 1587,
+      "writable": false,
+      "cfp_names": [
+        "HeatMetering.ColdQuantityStartTime"
+      ],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x0642",
+      "coap_int": 1602,
+      "writable": false,
+      "cfp_names": [
+        "HeatMetering.ResetHeatQuantity"
+      ],
+      "app_modules": [
+        "heat_quantity_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x0643",
+      "coap_int": 1603,
+      "writable": true,
+      "cfp_names": [
+        "HeatMetering.ResetColdQuantity"
+      ],
+      "app_modules": [
+        "cold_quantity_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x0644",
+      "coap_int": 1604,
+      "writable": false,
+      "cfp_names": [
+        "PV.ColdPower"
+      ],
+      "app_modules": [
+        "cold_quantity_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x065A",
+      "coap_int": 1626,
+      "writable": false,
+      "cfp_names": [
+        "DemoMode.Mode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x065B",
+      "coap_int": 1627,
+      "writable": false,
+      "cfp_names": [
+        "DemoMode.Emulation"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x065F",
+      "coap_int": 1631,
+      "writable": false,
+      "cfp_names": [
+        "DemoMode.Display"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0669",
+      "coap_int": 1641,
+      "writable": true,
+      "cfp_names": [
+        "CF.PumpOperationMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_document_request",
+        "pump_on_off"
+      ]
+    },
+    {
+      "coap_id": "0x066A",
+      "coap_int": 1642,
+      "writable": true,
+      "cfp_names": [
+        "CF.ActiveOverrideMode",
+        "OverrideModes.ConfigMode"
+      ],
+      "app_modules": [
+        "basic_function",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x067F",
+      "coap_int": 1663,
+      "writable": false,
+      "cfp_names": [
+        "PumpState.ActiveInfluences.Override"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0680",
+      "coap_int": 1664,
+      "writable": false,
+      "cfp_names": [
+        "PumpState.ActiveInfluences.FlowRelated"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0681",
+      "coap_int": 1665,
+      "writable": false,
+      "cfp_names": [
+        "PumpState.ActiveInfluences.OverrideSource"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x06E7",
+      "coap_int": 1767,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "pump_setting_parameters",
+        "setpoint_stage_selector"
+      ]
+    },
+    {
+      "coap_id": "0x06E8",
+      "coap_int": 1768,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x06EA",
+      "coap_int": 1770,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x06EB",
+      "coap_int": 1771,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x06ED",
+      "coap_int": 1773,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x06F5",
+      "coap_int": 1781,
+      "writable": false,
+      "cfp_names": [
+        "CF.SetpointMinLimit"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "emergency_operation_speed",
+        "pump_details_cubit",
+        "pump_kick",
+        "second_parameter_setpoint",
+        "sensor_slot_stepper",
+        "setpoint_delivery_head_dpc",
+        "setpoint_delivery_head_dpv",
+        "setpoint_delivery_head_pset",
+        "setpoint_feeder_pump_correction_factor",
+        "setpoint_pid",
+        "setpoint_slider",
+        "setpoint_speed",
+        "setpoint_temperature_dtc",
+        "setpoint_temperature_tc",
+        "setpoint_volume_flow_qc",
+        "substitute_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x06F6",
+      "coap_int": 1782,
+      "writable": false,
+      "cfp_names": [
+        "CF.SetpointMaxLimit"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "emergency_operation_speed",
+        "pump_details_cubit",
+        "pump_kick",
+        "second_parameter_setpoint",
+        "sensor_slot_stepper",
+        "setpoint_delivery_head_dpc",
+        "setpoint_delivery_head_dpv",
+        "setpoint_delivery_head_pset",
+        "setpoint_feeder_pump_correction_factor",
+        "setpoint_pid",
+        "setpoint_slider",
+        "setpoint_speed",
+        "setpoint_temperature_dtc",
+        "setpoint_temperature_tc",
+        "setpoint_volume_flow_qc",
+        "substitute_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x06F7",
+      "coap_int": 1783,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "documents_cubit",
+        "emergency_operation_speed",
+        "heating_and_cooling_cubit",
+        "pid_controller",
+        "pump_details_cubit",
+        "pump_kick",
+        "pump_settings_cubit",
+        "second_parameter_setpoint",
+        "sensor_slot_stepper",
+        "setpoint_delivery_head_dpc",
+        "setpoint_delivery_head_dpv",
+        "setpoint_delivery_head_pset",
+        "setpoint_feeder_pump_correction_factor",
+        "setpoint_pid",
+        "setpoint_slider",
+        "setpoint_speed",
+        "setpoint_temperature_dtc",
+        "setpoint_temperature_tc",
+        "setpoint_volume_flow_qc",
+        "substitute_setpoint"
+      ]
+    },
+    {
+      "coap_id": "0x06FD",
+      "coap_int": 1789,
+      "writable": false,
+      "cfp_names": [
+        "CF.ControlFunctionModes.SecondParameterSet"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "settings_manual"
+      ]
+    },
+    {
+      "coap_id": "0x0701",
+      "coap_int": 1793,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "capabilities_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x08B1",
+      "coap_int": 2225,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_mfa_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x08B2",
+      "coap_int": 2226,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_mfa_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x08B3",
+      "coap_int": 2227,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_mfa_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x08B4",
+      "coap_int": 2228,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_mfa_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x08B5",
+      "coap_int": 2229,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit",
+        "coap_mfa_cubit",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "start_pump_selection"
+      ]
+    },
+    {
+      "coap_id": "0x08FD",
+      "coap_int": 2301,
+      "writable": false,
+      "cfp_names": [
+        "PV.DeliveryHead"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x08FE",
+      "coap_int": 2302,
+      "writable": false,
+      "cfp_names": [
+        "PV.VolumeFlow"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request",
+        "target_values_monitoring"
+      ]
+    },
+    {
+      "coap_id": "0x0939",
+      "coap_int": 2361,
+      "writable": false,
+      "cfp_names": [
+        "DevP.PHdMax"
+      ],
+      "app_modules": [
+        "pump_details_cubit",
+        "pump_details_view"
+      ]
+    },
+    {
+      "coap_id": "0x093B",
+      "coap_int": 2363,
+      "writable": false,
+      "cfp_names": [
+        "DevP.VolFlowLimMax"
+      ],
+      "app_modules": [
+        "design_volume_flow",
+        "documents_cubit",
+        "mfa_volume_flow_offset",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request",
+        "pump_setting_parameters",
+        "q_nominal_duty_point"
+      ]
+    },
+    {
+      "coap_id": "0x093C",
+      "coap_int": 2364,
+      "writable": false,
+      "cfp_names": [
+        "DevP.VolFlowLim_0_01",
+        "DevP.VolFlowLim_0_1"
+      ],
+      "app_modules": [
+        "no_flow_stop"
+      ]
+    },
+    {
+      "coap_id": "0x093D",
+      "coap_int": 2365,
+      "writable": false,
+      "cfp_names": [
+        "DevP.VolFlowLim_0_1"
+      ],
+      "app_modules": [
+        "maximum_volume_flow",
+        "minimum_volume_flow"
+      ]
+    },
+    {
+      "coap_id": "0x093E",
+      "coap_int": 2366,
+      "writable": false,
+      "cfp_names": [
+        "DevP.VolFlowLim_0_2"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "no_flow_stop",
+        "pump_document_request",
+        "q_nominal_duty_point"
+      ]
+    },
+    {
+      "coap_id": "0x093F",
+      "coap_int": 2367,
+      "writable": false,
+      "cfp_names": [
+        "DevP.VolFlowLim_0_9"
+      ],
+      "app_modules": [
+        "maximum_volume_flow",
+        "minimum_volume_flow",
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x09D9",
+      "coap_int": 2521,
+      "writable": false,
+      "cfp_names": [
+        "PV.MotorSpeed"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x09DC",
+      "coap_int": 2524,
+      "writable": false,
+      "cfp_names": [
+        "PV.TotalMotorOperatingTime"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x09E5",
+      "coap_int": 2533,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "automatic_pwm_frequency",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x09ED",
+      "coap_int": 2541,
+      "writable": false,
+      "cfp_names": [
+        "PV.ElectricalInputVoltage"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x09EE",
+      "coap_int": 2542,
+      "writable": false,
+      "cfp_names": [
+        "PV.ElectricalInputPower"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "energy_consumption",
+        "pump_details_cubit",
+        "pump_details_view",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0A0C",
+      "coap_int": 2572,
+      "writable": false,
+      "cfp_names": [
+        "PV.TotalEnergyConsumption"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_details_cubit",
+        "pump_details_view"
+      ]
+    },
+    {
+      "coap_id": "0x0A22",
+      "coap_int": 2594,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "energy_consumption"
+      ]
+    },
+    {
+      "coap_id": "0x0A23",
+      "coap_int": 2595,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "energy_consumption",
+        "pump_details_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0A29",
+      "coap_int": 2601,
+      "writable": true,
+      "cfp_names": [
+        "AllCFP::partnerWCID",
+        "MFA.NumberOfMembers"
+      ],
+      "app_modules": [
+        "coap_mfa_cubit",
+        "mfa_secondary_pump_cubit",
+        "pump_details_cubit",
+        "start_pump_selection"
+      ]
+    },
+    {
+      "coap_id": "0x0A66",
+      "coap_int": 2662,
+      "writable": true,
+      "cfp_names": [
+        "MFA.FallbackMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "mfa_substitute_value_volume_flow_requirement",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0A79",
+      "coap_int": 2681,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0A7A",
+      "coap_int": 2682,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0A7B",
+      "coap_int": 2683,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0A8D",
+      "coap_int": 2701,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0A8E",
+      "coap_int": 2702,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0AA3",
+      "coap_int": 2723,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit",
+        "coap_mfa_cubit",
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0AA6",
+      "coap_int": 2726,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit",
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0AC9",
+      "coap_int": 2761,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit",
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0ACA",
+      "coap_int": 2762,
+      "writable": true,
+      "cfp_names": [
+        "Dbl.SsmMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0ACB",
+      "coap_int": 2763,
+      "writable": true,
+      "cfp_names": [
+        "Dbl.SbmMode"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0ADD",
+      "coap_int": 2781,
+      "writable": false,
+      "cfp_names": [
+        "PumpState.ActiveInfluences.DoublePump"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B05",
+      "coap_int": 2821,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_swap_widget",
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B0A",
+      "coap_int": 2826,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_swap_widget",
+        "documents_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B14",
+      "coap_int": 2836,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "coap_dp_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B36",
+      "coap_int": 2870,
+      "writable": false,
+      "cfp_names": [
+        "AllCFP::devPUUID"
+      ],
+      "app_modules": [
+        "helpers",
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B3A",
+      "coap_int": 2874,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B3D",
+      "coap_int": 2877,
+      "writable": false,
+      "cfp_names": [
+        "DevP.TypeLabelPumpName"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B3F",
+      "coap_int": 2879,
+      "writable": false,
+      "cfp_names": [
+        "DevP.TypeLabelPumpType"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B42",
+      "coap_int": 2882,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B44",
+      "coap_int": 2884,
+      "writable": false,
+      "cfp_names": [
+        "DevP.SwVersionBundle"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B45",
+      "coap_int": 2885,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0B4A",
+      "coap_int": 2890,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "pump_settings_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0BC3",
+      "coap_int": 3011,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_settings_cubit",
+        "settings_manual"
+      ]
+    },
+    {
+      "coap_id": "0x0BC4",
+      "coap_int": 3012,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_settings_cubit",
+        "setpoint_slider",
+        "settings_manual"
+      ]
+    },
+    {
+      "coap_id": "0x0BC5",
+      "coap_int": 3013,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_settings_cubit",
+        "setpoint_slider",
+        "settings_manual"
+      ]
+    },
+    {
+      "coap_id": "0x0BC6",
+      "coap_int": 3014,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "heating_and_cooling_cubit",
+        "pump_config_cubit",
+        "pump_details_cubit",
+        "pump_settings_cubit",
+        "setpoint_slider",
+        "settings_manual"
+      ]
+    },
+    {
+      "coap_id": "0x0BC7",
+      "coap_int": 3015,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "number_of_radiators",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0BC8",
+      "coap_int": 3016,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "floor_surface_space",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0x0BC9",
+      "coap_int": 3017,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "factor_setpoint_installation",
+        "pump_setting_parameters",
+        "setpoint_slider"
+      ]
+    },
+    {
+      "coap_id": "0x0C13",
+      "coap_int": 3091,
+      "writable": true,
+      "cfp_names": [
+        "HMI.DisplayBrightness"
+      ],
+      "app_modules": [
+        "brightness_settings",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0C14",
+      "coap_int": 3092,
+      "writable": false,
+      "cfp_names": [
+        "HMI.UnitSet"
+      ],
+      "app_modules": []
+    },
+    {
+      "coap_id": "0x0C15",
+      "coap_int": 3093,
+      "writable": true,
+      "cfp_names": [
+        "HMI.Country"
+      ],
+      "app_modules": [
+        "country_settings",
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0C16",
+      "coap_int": 3094,
+      "writable": true,
+      "cfp_names": [
+        "HMI.Language"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "language_settings",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0x0C18",
+      "coap_int": 3096,
+      "writable": true,
+      "cfp_names": [
+        "HMI.UnitSet"
+      ],
+      "app_modules": [
+        "documents_cubit",
+        "pump_config_cubit",
+        "pump_document_request",
+        "unit_settings"
+      ]
+    },
+    {
+      "coap_id": "0x0C1A",
+      "coap_int": 3098,
+      "writable": true,
+      "cfp_names": [
+        "CF.SensorPosition"
+      ],
+      "app_modules": [
+        "analog_sensor_input_stepper",
+        "pump_config_cubit",
+        "sensor_slot_stepper"
+      ]
+    },
+    {
+      "coap_id": "0x0C8B",
+      "coap_int": 3211,
+      "writable": false,
+      "cfp_names": [
+        "Failure.List"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0C8C",
+      "coap_int": 3212,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0D53",
+      "coap_int": 3411,
+      "writable": false,
+      "cfp_names": [
+        "FH.FileID"
+      ],
+      "app_modules": [
+        "historical_messages_cubit",
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0F00",
+      "coap_int": 3840,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "installer_contact"
+      ]
+    },
+    {
+      "coap_id": "0x0F01",
+      "coap_int": 3841,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "installer_contact"
+      ]
+    },
+    {
+      "coap_id": "0x0F02",
+      "coap_int": 3842,
+      "writable": true,
+      "cfp_names": [
+        "DevP.Name"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0x0F03",
+      "coap_int": 3843,
+      "writable": true,
+      "cfp_names": [
+        "DevP.Location"
+      ],
+      "app_modules": [
+        "pump_details_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xDF00",
+      "coap_int": 57088,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "number_of_radiators"
+      ]
+    },
+    {
+      "coap_id": "0xDF01",
+      "coap_int": 57089,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "number_of_radiators"
+      ]
+    },
+    {
+      "coap_id": "0xDF02",
+      "coap_int": 57090,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "floor_surface_space"
+      ]
+    },
+    {
+      "coap_id": "0xDF03",
+      "coap_int": 57091,
+      "writable": false,
+      "cfp_names": [],
+      "app_modules": [
+        "floor_surface_space"
+      ]
+    },
+    {
+      "coap_id": "0xDF04",
+      "coap_int": 57092,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "number_of_radiators",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0xDF05",
+      "coap_int": 57093,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "floor_surface_space",
+        "pump_details_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0xDF06",
+      "coap_int": 57094,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "factor_setpoint_installation",
+        "pump_setting_parameters",
+        "setpoint_slider"
+      ]
+    },
+    {
+      "coap_id": "0xE201",
+      "coap_int": 57857,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "max_pressure_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE202",
+      "coap_int": 57858,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "max_pressure_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE203",
+      "coap_int": 57859,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "max_pressure_detection",
+        "pump_config_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0xE211",
+      "coap_int": 57873,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "min_pressure_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE212",
+      "coap_int": 57874,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "min_pressure_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE213",
+      "coap_int": 57875,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "min_pressure_detection",
+        "pump_config_cubit",
+        "pump_setting_parameters"
+      ]
+    },
+    {
+      "coap_id": "0xE221",
+      "coap_int": 57889,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "external_interfaces_cubit",
+        "lack_of_water_detection",
+        "pump_config_cubit",
+        "pump_setting_parameters",
+        "setpoint_external_source"
+      ]
+    },
+    {
+      "coap_id": "0xE222",
+      "coap_int": 57890,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "lack_of_water_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE223",
+      "coap_int": 57891,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "lack_of_water_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE224",
+      "coap_int": 57892,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "lack_of_water_detection",
+        "pump_config_cubit"
+      ]
+    },
+    {
+      "coap_id": "0xE231",
+      "coap_int": 57905,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "fluid_mixture_correction",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0xE232",
+      "coap_int": 57906,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "fluid_mixture_correction",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    },
+    {
+      "coap_id": "0xE233",
+      "coap_int": 57907,
+      "writable": true,
+      "cfp_names": [],
+      "app_modules": [
+        "documents_cubit",
+        "fluid_mixture_correction",
+        "pump_config_cubit",
+        "pump_document_request"
+      ]
+    }
+  ]
+}

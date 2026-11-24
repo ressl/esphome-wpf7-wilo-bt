@@ -1,0 +1,448 @@
+#
+# ESPHome Configuration for Stiebel Eltron WPF 7 Heat Pump
+# Hardware: Waveshare ESP32-S3-RS485-CAN Board
+# Protocol: Elster CAN Bus via ESP32-S3 TWAI
+# Based on ha-stiebel-control by Bastian Stahmer (LGPL v3)
+#
+# USAGE: Load this file in ESPHome Dashboard and click "Upload"
+# C++ includes must be in ha-stiebel-control/ subfolder next to this file
+#
+# 2.3.0-wpf7.1 (2026-11-16, ressl):
+#  - all entities via the native API; custom MQTT discovery/state topics off
+#    (HA_MQTT_ENTITIES 0 in config.h). MQTT stays for birth/will, the log topic
+#    and the CAN scan results.
+#  - SG Ready rebuilt as native entities with a room-setpoint boost (sg_ready.yaml)
+#  - read-only CAN scan, start by button only (can_scan.yaml / can_scan.h)
+#  - mode select, setpoints, FE7 rounding, millis() wrap, decode buffer, read
+#    request filter, member-aware value mapping fixed (see ha-stiebel-control.h)
+#  - temporary BLE scanner (Wilo) removed
+#
+# 2.4.0-wpf7.1 (2026-11-16, ressl):
+#  - "FE7-Simulation" rebuilt as a room temperature feed: RAUMISTTEMP is written from
+#    the ESP's own CAN-ID every 60 s to the member chosen in "Raumtemperatur Ziel":
+#    0x601 in the frame format of a real FEK, or 0x301 (method proven on a THZ 504).
+#    The old frame (spoofed CAN-ID 0x301 -> MANAGER) was never used by the WPM i.
+#    Sends only while HA is connected and the value is 10..35 degC; default OFF.
+#  - read-back sensors "Raumtemperatur laut WPMi (0x601)" and "(0x301)" (1 min)
+#  - button "Raumtemperatur 0x601 zuruecksetzen": writes -40.0 (no sensor) to 0x601
+#
+# 2.4.1-wpf7.1 (2026-11-16, ressl):
+#  - passive CAN bus monitor (switch "CAN-Busmonitor (nur lesen)", max 2 h, sends
+#    nothing): counts every frame that is not an answer to our own reads, logs tag
+#    BUSMON, MQTT heatingpump/busmon/# (bus_monitor.yaml / bus_monitor.h)
+#
+# 2.5.0-wpf7.1 (2026-11-16, ressl):
+#  - room temperature feed of 2.4.0 removed (switch "FE7-Simulation", select
+#    "Raumtemperatur Ziel", button "Raumtemperatur 0x601 zuruecksetzen", both read-back
+#    sensors, HA import "Wohnzimmer Temperatur", RAUMISTTEMP polls): the WPM i uses a
+#    room temperature only from a registered FEK. Room control now runs in Home
+#    Assistant (packages/wpf7_raumfuehrung.yaml) via the room setpoint numbers.
+#  - new read-only diagnostic sensors with raw values (meaning to be validated):
+#    QUELLE_IST, MASCHINENDRUCK, SAMMEL_RELAISSTATUS (+ bit list), ZWEITER_WE_STATUS,
+#    LAUFZEIT_WP1
+#
+# 2.5.1-wpf7.1 (2026-11-16, ressl):
+#  - SAMMEL_RELAISSTATUS removed from the ElsterTable blacklist (it was never requested,
+#    so "Relaisstatus" stayed unknown). Bits per ElsterTable.h: DHC1 0x0001, DHC2 0x0002,
+#    WW-Ventil 0x0010, Heizkreispumpe 0x0020, Pufferladepumpe 0x0040, Quellenpumpe 0x0100,
+#    Kuehlen 0x0200; 0x0004/0x0008 undocumented (compressor run only, chriss1980)
+#
+# 2.6.0-wpf7.1 (2026-11-17, ressl):
+#  - framework arduino -> esp-idf. Arduino 3.3.12 already ran on ESP-IDF 5.5.6, the
+#    esp-idf build uses the same IDF 5.5.6: same TWAI driver, Wi-Fi stack and loop task.
+#    Changes: no Arduino layer, MQTT on esp-mqtt (only status/log/scan/busmon topics,
+#    no HA entity uses MQTT), web_server on esp_http_server (digest auth supported).
+#    The bridge code uses no Arduino API (std C++, driver/twai.h, esp_random).
+#  - runtime diagnostics for the migration: uptime, reset reason, free heap,
+#    largest heap block, free PSRAM (debug component, diagnostic entities)
+#
+# 2.7.0-wpf7.1 (2026-11-24, ressl):
+#  - integrated Wilo-Smart Connect module BT (4239241) via custom external component
+#    components/wilo_bt and package heatpump-include/wilo_bt.yaml
+#  - BLE uses PSRAM offload (use_psram: true), max_connections: 1, gentle 30ms/320ms
+#    scan window with software_coexistence: true, and stops scanning while connected
+#    so Wi-Fi and CAN remain unaffected
+#
+
+# 2.8.0-wpf7.1 (2026-11-24, ressl):
+#  - Wilo BT upgraded from Wilo-Assistant 6.13.0 protocol spec:
+#    * fixed active_fault to strictly use 0x0C8B (Failure.List) + 0x0C8C details
+#      (0x0191 = Pressure Independent Valve, 0x025A = Night Setback)
+#    * added PV.MediumTemp (0x03A2), active_warning, active_alarms, air venting status
+#    * enabled verified controls: pump_run (0x0669), setpoint (0x0079), control_mode (0x0001),
+#      night_setback (0x025A), pressure_independent_valve (0x0191), air_venting (0x0605),
+#      manual_restart (0x05C9), reset_energy (0x0A22)
+#    * compacted raw JSON text sensors <= 250 chars for Home Assistant
+#
+# 2.9.0-wpf7.1 (2026-11-24, ressl):
+#  - WPM i CAN upgrade verified against ComfortSoft 4.2.0 (CWpmIStatusPage, CWpmIInfo2Page,
+#    CommunicationElsterDeclarations.dll) & 2026-11-16 CAN scan (1203 hits):
+#    * decoded SAMMEL_RELAISSTATUS (0x0a20) into native binary sensors (Verdichter 0x000C,
+#      Quellenpumpe 0x0100, Pufferladepumpe 0x0040, Heizkreispumpe 0x0020, DHC1 0x0001, DHC2 0x0002)
+#    * decoded MASCHINENDRUCK (0x0268) in bar + R410A condensing temp, approach & superheat
+#    * added LAUFZEIT_WP1 (h), LAUFZEIT_DHC1/2 (h), STILLSTANDZEIT_0 (min, 0x480),
+#      HEIZKURVE (0x480), VORLAUFSOLLTEMP (0x301), SOMMERBETRIEB (0xfdb4 et_little_bool)
+#    * unblacklisted FEHLERMELDUNG (0x0001) with German WPM i error text & problem binary sensor
+#    * fixed delta_t update to trigger on both WPVORLAUFIST and RUECKLAUFISTTEMP
+#  - Wilo Stratos PICO <-> WPF 7 live coupling (same ESP32-S3):
+#    * upgraded thermal power & COP calculation to live Wilo volume flow (m3/h, fallback 0.90)
+#    * added continuous 0-in-idle Wärmeleistung (Live) for exact HA Riemann energy & JAZ
+#    * added Wilo power share (%) & WP power without Wilo (W)
+#    * added debounced low-flow protection binary sensor (< 0.75 m3/h during run; WPF 7 min 0.7)
+#
+
+# 2.9.1-wpf7.1 (2026-11-24, ressl):
+#  - static cop_flow_source ("Wilo Live" / "Fallback (0.90 m³/h)") to avoid text history spam
+#  - capped initial post-boot CAN poll stagger to 90 s so 10-min counters populate promptly
+#
+
+# 2.9.2-wpf7.1 (2026-11-24, ressl):
+#  - fixed IEEE-754 NaN guard in publishRefrigerantDiagnostics() so Verflüssiger-Grädigkeit
+#    and Heißgas-Überhitzung publish cleanly when compressor starts after standby
+#
+
+packages:
+  native_sensors: !include heatpump-include/native_sensors.yaml
+  can_diagnostics: !include heatpump-include/can_diagnostics.yaml
+  sg_ready: !include heatpump-include/sg_ready.yaml
+  can_scan: !include heatpump-include/can_scan.yaml
+  bus_monitor: !include heatpump-include/bus_monitor.yaml
+  wilo_bt: !include heatpump-include/wilo_bt.yaml
+
+#########################################
+#                                       #
+#   BOARD & ESPHOME                     #
+#                                       #
+#########################################
+esphome:
+  name: heatingpump
+  friendly_name: "Stiebel Eltron WPF 7"
+  project:
+    name: "ressl.esphome-wpf7-wilo-bt"
+    version: "2.9.2-wpf7.1"
+  includes:
+    - heatpump-include/ha-stiebel-control/elster/ElsterTable.h
+    - heatpump-include/ha-stiebel-control/elster/KElsterTable.h
+    - heatpump-include/ha-stiebel-control/elster/KElsterTable.cpp
+    - heatpump-include/ha-stiebel-control/elster/NUtils.h
+    - heatpump-include/ha-stiebel-control/elster/NUtils.cpp
+    - heatpump-include/ha-stiebel-control/elster/NTypes.h
+    - heatpump-include/ha-stiebel-control/config.h
+    - heatpump-include/ha-stiebel-control/language_select.h
+    - heatpump-include/ha-stiebel-control/lang_base.h
+    - heatpump-include/ha-stiebel-control/lang_en.h
+    - heatpump-include/ha-stiebel-control/ha-stiebel-control.h
+    - heatpump-include/ha-stiebel-control/signal_requests_wpf7.h
+    - heatpump-include/ha-stiebel-control/can_scan.h
+    - heatpump-include/ha-stiebel-control/bus_monitor.h
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+  variant: esp32s3
+  flash_size: 16MB
+
+# 2.6.0: runtime diagnostics (reset reason, heap) for the esp-idf migration
+debug:
+  update_interval: 60s
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+#########################################
+#                                       #
+#   LOGGER                              #
+#                                       #
+#########################################
+logger:
+  level: INFO
+  baud_rate: 115200
+  logs:
+    # one line per CAN request/answer (~1.3 lines/s, also sent to MQTT
+    # heatingpump/debug). Remove these two lines to see the raw traffic again.
+    readSignal(): WARN
+    processCanMessage(): WARN
+
+#########################################
+#                                       #
+#   API, OTA, SAFE MODE                 #
+#                                       #
+#########################################
+api:
+  encryption:
+    key: !secret api_encryption_key
+  reboot_timeout: 15min
+
+ota:
+  platform: esphome
+  encryption:
+
+safe_mode:
+  reboot_timeout: 5min
+
+# Wilo BLE integration lives in heatpump-include/wilo_bt.yaml (added in 2.7.0)
+# using low-duty scanning (30ms/320ms) and stopping scan while connected.
+
+#########################################
+#                                       #
+#   TIME                                #
+#                                       #
+#########################################
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    timezone: Europe/Zurich
+    on_time:
+      # Sync clock to WPM i daily at 03:00
+      - seconds: 0
+        minutes: 0
+        hours: 3
+        then:
+          - lambda: |-
+              auto now = id(homeassistant_time).now();
+              if (!now.is_valid()) {
+                ESP_LOGW("TIME_SYNC", "HA time not available, skipping sync");
+                return;
+              }
+              char time_str[9];
+              snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d", now.hour, now.minute, now.second);
+              char date_str[11];
+              snprintf(date_str, sizeof(date_str), "20%02d-%02d-%02d", now.year % 100, now.month, now.day_of_month);
+              ESP_LOGI("TIME_SYNC", "Syncing WPM i clock: %s %s", date_str, time_str);
+              updateTime(CanMembers[cm_manager], time_str);
+              delay(500);
+              updateDate(CanMembers[cm_manager], date_str);
+      # Also sync on boot (5 min after start to ensure HA connection)
+      - seconds: 0
+        minutes: 5
+        then:
+          - if:
+              condition:
+                lambda: 'return id(homeassistant_time).now().is_valid();'
+              then:
+                - lambda: |-
+                    static bool boot_synced = false;
+                    if (boot_synced) return;
+                    boot_synced = true;
+                    auto now = id(homeassistant_time).now();
+                    char time_str[9];
+                    snprintf(time_str, sizeof(time_str), "%02d:%02d:%02d", now.hour, now.minute, now.second);
+                    char date_str[11];
+                    snprintf(date_str, sizeof(date_str), "20%02d-%02d-%02d", now.year % 100, now.month, now.day_of_month);
+                    ESP_LOGI("TIME_SYNC", "Boot sync WPM i clock: %s %s", date_str, time_str);
+                    updateTime(CanMembers[cm_manager], time_str);
+                    delay(500);
+                    updateDate(CanMembers[cm_manager], date_str);
+
+#########################################
+#                                       #
+#   CAN BUS (ESP32-S3 TWAI)            #
+#                                       #
+#########################################
+canbus:
+  - platform: esp32_can
+    id: my_can
+    tx_pin: GPIO15
+    rx_pin: GPIO16
+    can_id: 0x680
+    use_extended_id: false
+    bit_rate: 20kbps
+    rx_queue_len: 256
+    tx_queue_len: 64
+    on_frame:
+      - can_id: 0
+        can_id_mask: 0
+        then:
+          - lambda: |-
+              processAndUpdate(can_id, x);
+
+#########################################
+#                                       #
+#   MQTT (optional, parallel to API)    #
+#                                       #
+#########################################
+mqtt:
+  broker: !secret mqtt_broker
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+  discovery: false
+  discovery_prefix: homeassistant
+  birth_message:
+    topic: heatingpump/status
+    payload: online
+    qos: 1
+    retain: true
+  will_message:
+    topic: heatingpump/status
+    payload: offline
+    qos: 1
+    retain: true
+  keepalive: 15s
+  reboot_timeout: 0s
+  on_connect:
+    - logger.log:
+        level: INFO
+        format: "Connected to MQTT broker"
+        tag: "MQTT_CONN"
+  on_disconnect:
+    - logger.log:
+        level: WARN
+        format: "Disconnected from MQTT broker - will automatically retry"
+  # 2.3.0: no MQTT command topics any more. Setpoints, mode and SG Ready are
+  # native API entities (native_sensors.yaml, sg_ready.yaml).
+
+#########################################
+#                                       #
+#   INTERVAL TIMERS                     #
+#                                       #
+#########################################
+interval:
+  - interval: 1s
+    then:
+      - lambda: processSignalRequests();
+  - interval: 1s
+    then:
+      - lambda: |-
+          processCalculatedSensors();
+          sgReadyLoop();
+
+#########################################
+#                                       #
+#   HA TEXT SENSORS (for date/time)     #
+#                                       #
+#########################################
+text_sensor:
+  - platform: debug
+    reset_reason:
+      name: "Reset-Grund"
+      entity_category: diagnostic
+
+  - platform: homeassistant
+    name: "Wärmepumpe Datum Setpoint"
+    id: warmepumpe_datum
+    entity_id: input_datetime.heatingpump_date
+
+  - platform: homeassistant
+    name: "Wärmepumpe Uhrzeit Setpoint"
+    id: warmepumpe_uhrzeit
+    entity_id: input_datetime.heatingpump_time
+
+  - platform: template
+    name: "DATUM"
+    id: DATUM
+    internal: true
+    icon: "mdi:calendar"
+
+  - platform: template
+    name: "ZEIT"
+    id: ZEIT
+    internal: true
+    icon: "mdi:clock"
+
+#########################################
+#                                       #
+#   BUTTONS                             #
+#                                       #
+#########################################
+button:
+  - platform: template
+    name: "Update Uhrzeit"
+    id: update_uhrzeit
+    icon: "mdi:clock-check"
+    on_press:
+      then:
+        lambda: |-
+          updateTime(CanMembers[cm_manager], id(warmepumpe_uhrzeit).state.c_str());
+
+  - platform: template
+    name: "Update Datum"
+    id: update_datum
+    icon: "mdi:calendar-check"
+    on_press:
+      then:
+        lambda: |-
+          updateDate(CanMembers[cm_manager], id(warmepumpe_datum).state.c_str());
+
+  - platform: restart
+    name: "Restart"
+    id: restart_button
+
+  - platform: factory_reset
+    name: "Factory Reset (Clear NVS)"
+    icon: "mdi:restart-alert"
+
+#########################################
+#                                       #
+#   WIFI                                #
+#                                       #
+#########################################
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # use_address: 192.168.1.50  # Optional static IP override for OTA
+  fast_connect: true
+  power_save_mode: light
+  reboot_timeout: 5min
+
+web_server:
+  port: 80
+  auth:
+    # 2.3.0: digest instead of basic (basic sends the password reversibly)
+    type: digest
+    username: !secret web_server_username
+    password: !secret ota_password
+
+#########################################
+#                                       #
+#   WIFI DIAGNOSTICS                    #
+#                                       #
+#########################################
+sensor:
+  # 2.6.0: runtime diagnostics for the esp-idf migration
+  - platform: uptime
+    name: "Uptime"
+    entity_category: diagnostic
+    update_interval: 60s
+
+  - platform: debug
+    free:
+      name: "Heap frei"
+      entity_category: diagnostic
+    block:
+      name: "Heap größter Block"
+      entity_category: diagnostic
+    psram:
+      name: "PSRAM frei"
+      entity_category: diagnostic
+
+  # Shelly 3EM — electrical power measurement
+  - platform: homeassistant
+    name: "Elektrische Leistung"
+    id: shelly_active_power
+    entity_id: sensor.shelly_power_meter_heating_pump_total_active_power
+    icon: "mdi:flash"
+    unit_of_measurement: "W"
+    accuracy_decimals: 1
+
+  - platform: wifi_signal
+    name: "WiFi Signal dBm"
+    icon: "mdi:wifi"
+    update_interval: 60s
+    id: wifi_dbm
+
+  - platform: template
+    name: "WiFi Signal"
+    icon: "mdi:signal"
+    unit_of_measurement: "%"
+    update_interval: 60s
+    id: wifi_percentage
+    lambda: |-
+      float dBm = id(wifi_dbm).state;
+      float MIN_DBM = -100.0;
+      float MAX_DBM = -30.0;
+      if (dBm < MIN_DBM) dBm = MIN_DBM;
+      if (dBm > MAX_DBM) dBm = MAX_DBM;
+      return ((dBm - MIN_DBM) / (MAX_DBM - MIN_DBM)) * 100;
