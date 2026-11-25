@@ -2,8 +2,9 @@
 #
 #   WPF 7 + Wilo Stratos PICO: Schutz, Standby-Absenkung & Alarme (2026-11-24)
 #
-#   Hydraulik: Wilo Stratos PICO ist die einzige Heizungspumpe direkt an der
-#   WPF 7 / Reihenpuffer (nur Heizbetrieb, kein Trinkwarmwasser).
+#   Hydraulik: Heizkreispumpe (Wilo Stratos PICO, 0x0020) am Parallel- oder
+#   Reihenpuffer (nur Heizbetrieb, kein Trinkwarmwasser). Bei Parallelpuffer
+#   empfiehlt sich ein Betriebs-Sollwert nahe Q_sek ≈ Q_prim (~3,0 m bei ~1,05 m³/h).
 #   WPF 7 Datenblatt (S. 15): Mindestvolumenstrom warme Seite = 0,70 m³/h.
 #
 #   Bausteine:

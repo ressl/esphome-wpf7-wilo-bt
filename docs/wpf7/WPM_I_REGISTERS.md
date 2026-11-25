@@ -25,17 +25,26 @@ This document summarizes the CAN bus registers verified on a **Stiebel Eltron WP
 | `0x0005`..`0x0008` | `0x180` | `RAUMSOLLTEMP_I..NACHT` | `et_dec_val` | Room temperature setpoints (`0.1` °C, RW). |
 | `0x000c` | `0x180` | `AUSSENTEMP` | `et_dec_val` | Outside temperature (`°C`). |
 | `0x0016` | `0x180` | `RUECKLAUFISTTEMP` | `et_dec_val` | Return temperature (`°C`). |
+| `0x0022` | `0x180` | `HYSTERESEZEIT` | `et_default` | Mirrors `REGLERDYNAMIK` raw integer (`0x001e` = `30`; note `ElsterTable.h` decodes as `et_dec_val` `3.0`). |
 | `0x010e` | `0x480` | `HEIZKURVE` | `et_cent_val` | Heating curve slope (`raw / 100.0`, e.g. `0.23`). |
+| `0x01ac` | `0x180` | `BIVALENTPARALLELTEMPERATUR_HZG` | `et_dec_val` | Display `BIVALENZ-HZG` (`°C`, e.g. `-19.0 °C` — outdoor temperature threshold enabling backup heater). |
+| `0x01ae` | `0x180` | `BIVALENZALTERNATIVTEMPERATUR_HZG` | `et_dec_val` | Display `GRENZE-HZG` (`0xa000` = `AUS` / disabled). |
 | `0x01c4` | `0x480` | `LAUFZEIT_WP1` | `et_default` | Compressor total runtime (`h`). |
 | `0x01cc` | `0x480` | `STILLSTANDZEIT_0` | `et_default` | Remaining compressor anti-short-cycle lockout (`min`, `0` = ready). |
 | `0x01d6` | `0x180` | `WPVORLAUFIST` | `et_dec_val` | Heat pump flow temperature (`°C`). |
 | `0x01d4` | `0x180` | `QUELLE_IST` | `et_dec_val` | Brine / source inlet temperature (`°C`). |
+| `0x01e8` | `0x180` | `MAX_HEIZUNG_TEMP` | `et_dec_val` | Display `VORLAUFMAX-HZG` (`°C`, e.g. `60.0 °C`). |
 | `0x0259` | `0x480` | `LAUFZEIT_DHC1` | `et_default` | Electric backup heater stage 1 runtime (`h`). |
 | `0x025a` | `0x480` | `LAUFZEIT_DHC2` | `et_default` | Electric backup heater stage 2 runtime (`h`). |
 | `0x0265` | `0x180` | `HEISSGASTEMP` | `et_dec_val` | Hot-gas discharge temperature (`°C`). |
 | `0x0268` | `0x480` | `MASCHINENDRUCK` | `et_dec_val` | R410A high-pressure gauge transducer (`raw / 10.0` bar(g)). |
 | `0x0a20` | `0x480` | `SAMMEL_RELAISSTATUS` | `et_default` | 16-bit relay bitmask (see Section 3). Unblacklisted in `ElsterTable.h`. |
 | `0xfdab` | `0x480` | `ZWEITER_WE_STATUS` | `et_default` | Actually `cWP_EVU` (utility block input status on WPM i). |
+| `0xfdaf` | `0x601` | `DAUERLAUF_PUFFERLADEPUMPE` | `et_little_endian` | Display `DAUERLAUF-PUMP` (`0` = `AUS`, `1` = `EIN`). |
+| `0xfdb0` | `0x601` | `SCHALTWERKDYNAMIKZEIT` | `et_little_endian` | Display `REGLERDYNAMIK` (Kelvin-minute integral threshold, e.g. `30` — see Section 7). |
+| `0xfdb1` | `0x601` | `STILLSTANDZEIT` | `et_little_endian` | Display `STILLSTANDZEIT` (`min`, e.g. `20`). |
+| `0xfdb2` | `0x601` | `PUMPENZYKLEN` | `et_little_endian` | Display `PUMPENZYKLEN` (`0` = `AUS`, `1` = `EIN`). |
+| `0xfdb3` | `0x601` | `GEBAEUDEART` | `et_little_endian` | Building thermal mass class (`1`..`3`, e.g. `2`). |
 | `0xfdb4` | `0x180` | `SOMMERBETRIEB` | `et_little_bool` | Automatic summer shutoff configuration flag (`0x0100` = enabled, `0x0000` = disabled; **NOT** "currently in summer standby"). |
 
 ---
@@ -113,3 +122,12 @@ From `T_kond`, two live refrigeration-health metrics are derived during compress
 ## 6. Note on Room Sensor Simulation (`RAUMISTTEMP`)
 
 On the **WPM i**, writing `RAUMISTTEMP` directly on the CAN bus (`0x601` or `0x301`) is **ignored** unless a real physical FEK remote control is registered with the WPM i. Instead, [homeassistant/packages/wpf7_raumfuehrung.yaml](../../homeassistant/packages/wpf7_raumfuehrung.yaml) implements a clean closed-loop **PI controller** that adjusts `RAUMSOLLTEMP_I` and `RAUMSOLLTEMP_NACHT` (`0x0005` / `0x0008`, rounded to `0.5 K` to protect EEPROM). Testing confirmed that a `-1.0 K` room setpoint shift moves the WPM i buffer setpoint by `-1.2 K` within `~25 s`.
+
+---
+
+## 7. Note on WPM i (`Software 9008`) Integral Switching (`REGLERDYNAMIK`)
+
+Unlike newer WPM 3 / 3i controllers, the classic **WPM i** (`SOFTWARE-WPMI 9008`) does **not** expose *Anteil Vorlauf* or *Hysterese 1..5* menus. Instead, compressor cut-off is governed by the Kelvin-minute integral register **`0xfdb0` (`SCHALTWERKDYNAMIKZEIT`, display `REGLERDYNAMIK`)** together with `0xfdb1` (`STILLSTANDZEIT`).
+
+- Higher `REGLERDYNAMIK` values (e.g. `30` for underfloor heating) integrate more Kelvin-minutes above the return setpoint before stopping the compressor, extending runtimes at the cost of higher peak flow temperatures at the end of a cycle.
+- On parallel-buffer installations where an internal buffer-charging pump (`0x0040`) feeds the primary loop and an external circulation pump (e.g. Wilo Stratos PICO) drives the secondary heating circuit, matching the secondary flow `Q_sek` closely to the primary flow `Q_prim` (avoiding both under-flow short-circuiting and over-flow return mixing) is the cleanest lever to lengthen cycles and lower peak flow temperatures without changing WPM i factory dynamics.
